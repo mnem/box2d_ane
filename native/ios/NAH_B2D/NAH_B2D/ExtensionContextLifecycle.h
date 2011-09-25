@@ -12,8 +12,8 @@
 void NAH_B2D_ContextInitializer(void* extensionData, 
                                 const uint8_t* contextType,
                                 FREContext context,
-                                uint32_t* numberOfNamedFunctions, 
-                                const FRENamedFunction** namedFunctionsArray);
+                                uint32_t* numberOfNamedFunctionsOut, 
+                                const FRENamedFunction** namedFunctionsArrayOut);
 
 /**
  * Called when the extension context will be destroyed.

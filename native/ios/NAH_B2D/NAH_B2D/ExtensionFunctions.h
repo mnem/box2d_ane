@@ -1,1 +1,1 @@
-FREObject NAH_B2D_hello(FREContext ctx, void* funcData, uint32_t argc, FREObject argv[]);
+FREObject NAH_B2D_hello(FREContext context, void* functionData, uint32_t argc, FREObject argv[]);

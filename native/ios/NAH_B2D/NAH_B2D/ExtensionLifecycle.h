@@ -1,5 +1,5 @@
-void ADBEExtInitializer(void** extDataToSet,
-                        FREContextInitializer* ctxInitializerToSet, 
-                        FREContextFinalizer* ctxFinalizerToSet);
+void NAH_B2D_ExtensionInitializer(void** extensionDataOut,
+                                  FREContextInitializer* contextInitializerFunctionOut, 
+                                  FREContextFinalizer* contextFinalizerFunctionOut);
 
-void ADBEExtFinalizer(void* extData);
+void NAH_B2D_ExtensionFinalizer(void* extensionData);

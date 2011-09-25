@@ -12,22 +12,24 @@
 void NAH_B2D_ContextInitializer(void* extensionData, 
                                 const uint8_t* contextType,
                                 FREContext context,
-                                uint32_t* numberOfNamedFunctions, 
-                                const FRENamedFunction** namedFunctionsArray)
+                                uint32_t* numberOfNamedFunctionsOut, 
+                                const FRENamedFunction** namedFunctionsArrayOut)
 {
-    NSLog(@"NAH_B2D_ContextInitializer called.");
+    NSLog(@"NAH_B2D_ContextInitializer enter");
     
-	*numberOfNamedFunctions = 1;
-	FRENamedFunction* functions = (FRENamedFunction*)malloc(sizeof(FRENamedFunction) * (*numberOfNamedFunctions));
+	*numberOfNamedFunctionsOut = 1;
+	FRENamedFunction* functions = (FRENamedFunction*)malloc(sizeof(FRENamedFunction) * (*numberOfNamedFunctionsOut));
     
 	functions[0].name = (const uint8_t*)"hello";
 	functions[0].functionData = NULL;
 	functions[0].function = &NAH_B2D_hello;
     
-    *namedFunctionsArray = functions;
+    *namedFunctionsArrayOut = functions;
+
+    NSLog(@"NAH_B2D_ContextInitializer exit");
 }
 
 void NAH_B2D_ContextFinalizer(FREContext context)
 {
-    NSLog(@"NAH_B2D_ContextFinalizer called.");
+    NSLog(@"NAH_B2D_ContextFinalizer called");
 }

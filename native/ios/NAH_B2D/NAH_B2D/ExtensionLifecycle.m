@@ -6,17 +6,17 @@
 #import "ExtensionLifecycle.h"
 #import "ExtensionContextLifecycle.h"
 
-void ADBEExtInitializer(void** extDataToSet,
-                        FREContextInitializer* ctxInitializerToSet, 
-                        FREContextFinalizer* ctxFinalizerToSet)
+void NAH_B2D_ExtensionInitializer(void** extensionDataOut,
+                                  FREContextInitializer* contextInitializerFunctionOut, 
+                                  FREContextFinalizer* contextFinalizerFunctionOut)
 {
-    NSLog(@"Entering ADBEExtInitializer()");                    
+    NSLog(@"NAH_B2D_ExtensionInitializer enter");                    
     
-	*extDataToSet = NULL;
-	*ctxInitializerToSet = &NAH_B2D_ContextInitializer; 
-	*ctxFinalizerToSet = &NAH_B2D_ContextFinalizer;
+	*extensionDataOut = NULL;
+	*contextInitializerFunctionOut = &NAH_B2D_ContextInitializer; 
+	*contextFinalizerFunctionOut = &NAH_B2D_ContextFinalizer;
     
-    NSLog(@"Exiting ADBEExtInitializer()"); 
+    NSLog(@"NAH_B2D_ExtensionInitializer exit"); 
 }  
 
 
@@ -26,8 +26,8 @@ void ADBEExtInitializer(void** extDataToSet,
 // The extension finalizer is called when the runtime unloads the extension. 
 // However, it is not always called.
 
-void ADBEExtFinalizer(void* extData)
+void NAH_B2D_ExtensionFinalizer(void* extData)
 {    
-    NSLog(@"Entering ADBEExtFinalizer()");
+    NSLog(@"NAH_B2D_ExtensionFinalizer called");
 }
 
