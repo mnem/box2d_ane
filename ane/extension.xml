@@ -1,0 +1,21 @@
+<extension xmlns="http://ns.adobe.com/air/extension/2.5">
+  <id>noiseandheat.ane.box2d</id>
+  <versionNumber>1</versionNumber>
+  <name>Box2D Native</name>
+  <description>Box2D physics library implemented as an Air Native Extension.</description>
+  <copyright>Copyright 2011, Noise and Heat</copyright>
+  <platforms>
+    <platform name="iPhone-ARM">
+      <applicationDeployment>
+        <nativeLibrary>libNaHBox2D.a</nativeLibrary>
+        <initializer>NAHB2DExtensionInitializer</initializer>
+        <finalizer>NAHB2DExtensionFinalizer</finalizer>
+      </applicationDeployment>
+    </platform>
+<!--
+    <platform name="default">
+      <applicationDeployment />
+    </platform>
+-->
+  </platforms>
+</extension>

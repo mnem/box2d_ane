@@ -1,5 +1,5 @@
-void NAH_B2D_ExtensionInitializer(void** extensionDataOut,
-                                  FREContextInitializer* contextInitializerFunctionOut, 
-                                  FREContextFinalizer* contextFinalizerFunctionOut);
+void NAHB2DExtensionInitializer(void** extensionDataOut,
+                                FREContextInitializer* contextInitializerFunctionOut, 
+                                FREContextFinalizer* contextFinalizerFunctionOut);
 
-void NAH_B2D_ExtensionFinalizer(void* extensionData);
+void NAHB2DExtensionFinalizer(void* extensionData);
