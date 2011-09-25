@@ -1,0 +1,15 @@
+# Ignore generally MacOS cruft
+.DS_Store
+
+# XCode 3 cruft
+*.swp
+*~.nib
+build/
+*.pbxuser
+*.perspective
+*.perspectivev3
+*.mode1v3
+*.mode2v3
+
+#Additional XCode 4 cruft
+xcuserdata

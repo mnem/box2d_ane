@@ -1,0 +1,8 @@
+//
+// Prefix header for all source files of the 'NAH_B2D' target in the 'NAH_B2D' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+    #import "FlashRuntimeExtensions.h"
+#endif
