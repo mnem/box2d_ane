@@ -1,21 +1,35 @@
+require 'rubygems'
+require 'highline/import'
+
+def get_storepass()
+	$password = %x{cat ../certificates/.password}
+	if $?.exitstatus != 0 then
+		$password = ask("Self signing key password: ") {|q| q.echo = '*'}
+	end
+
+	return $password
+end
+
+############################################################################
+# Test app
 desc 'Cleans the build directory by killing it'
 task :clean do
-	`rm -Rf build`
+	%x{rm -Rf build}
 end
 
 desc 'Ensures the build directory exists'
 task :ensure_build_directory do
-	`mkdir -p build`
+	%x{mkdir -p build}
 end
 
 desc 'Compiles the app'
 task :compile => :ensure_build_directory do
-	`mxmlc +configname=air -output build/Box2DANEApp.swf src/noiseandheat/test/box2dane/Box2DANEApp.mxml -load-config+=build.config`
+	%x{mxmlc +configname=air -output build/Box2DANEApp.swf src/noiseandheat/test/box2dane/Box2DANEApp.mxml -load-config+=build.config}
 end
 
 desc 'Debugs the app'
 task :debug => [:compile] do
-	`adl -extdir ../extension/build/ src/noiseandheat/test/box2dane/Box2DANEApp-app.xml`
+	%x{adl -extdir ../extension/build/ src/noiseandheat/test/box2dane/Box2DANEApp-app.xml}
 end
 
 task :default => [ :compile ]

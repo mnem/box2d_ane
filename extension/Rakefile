@@ -1,3 +1,15 @@
+require 'rubygems'
+require 'highline/import'
+
+def get_storepass()
+	$password = %x{cat ../certificates/.password}
+	if $?.exitstatus != 0 then
+		$password = ask("Self signing key password: ") {|q| q.echo = '*'}
+	end
+
+	return $password
+end
+
 ############################################################################
 # Default
 desc 'Ensures the default ActionScript build directory exists'
@@ -55,7 +67,7 @@ end
 
 desc 'Packages the extension'
 task :package_extension => [:prepare_ios_library, :prepare_default_library] do
-	`adt -package -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a -platform default -C build/default library.swf`
+	%x{adt -package -storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass} -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a -platform default -C build/default library.swf}
 end
 
 task :default => [ :package_extension ]
