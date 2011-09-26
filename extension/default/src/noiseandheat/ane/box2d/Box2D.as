@@ -33,31 +33,27 @@ package noiseandheat.ane.box2d
 	public final class Box2D
 	implements Box2DAPI
 	{
-		private var context:ExtensionContext;
+		private var disposed:Boolean;
 
 		public function Box2D()
 		{
-			trace("Constructing a native Box2D object");
-			context = ExtensionContext.createExtensionContext("noiseandheat.ane.box2d", null);
+			trace("Constructing an ActionScript Box2D object");
+			disposed = false;
 		}
 
 		public function dispose():void
 		{
-			if(context != null)
-			{
-				context.dispose();
-				context = null;
-			}
+			disposed = true;
 		}
 
 		public function hello():String
 		{
-			if(context == null)
+			if(disposed)
 			{
 				throw new Error("Cannot use extension after dispose() has been called");
 			}
 
-			return context.call("hello") as String;
+			return "Why, hello there. I'm your ActionScript non-native. How do you do?";
 		}
 	}
 }

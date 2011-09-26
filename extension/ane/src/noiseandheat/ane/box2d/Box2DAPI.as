@@ -28,36 +28,23 @@
  */
 package noiseandheat.ane.box2d
 {
-	import flash.external.ExtensionContext;
-
-	public final class Box2D
-	implements Box2DAPI
+	/**
+	 * Public API for the Box2D native class. Largely used to ensure
+	 * that the AS only default implementation presents the same API
+	 */
+	public interface Box2DAPI
 	{
-		private var context:ExtensionContext;
+		/**
+		 * Disposes of the extension. You cannot use this instance
+		 * of the extension after calling this, so do it when you
+		 * are finished with it and want to force it to clean up
+		 * without waiting for the garbage collector to do it.
+		 */
+		function dispose():void;
 
-		public function Box2D()
-		{
-			trace("Constructing a native Box2D object");
-			context = ExtensionContext.createExtensionContext("noiseandheat.ane.box2d", null);
-		}
-
-		public function dispose():void
-		{
-			if(context != null)
-			{
-				context.dispose();
-				context = null;
-			}
-		}
-
-		public function hello():String
-		{
-			if(context == null)
-			{
-				throw new Error("Cannot use extension after dispose() has been called");
-			}
-
-			return context.call("hello") as String;
-		}
+		/**
+		 * Says hello to the extension, which returns a reply.
+		 */
+		function hello():String;
 	}
 }

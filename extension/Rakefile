@@ -1,36 +1,61 @@
-desc 'Ensures the build directory exists'
-task :ensure_build_directory do
-	`mkdir -p build`
+############################################################################
+# Default
+desc 'Ensures the default ActionScript build directory exists'
+task :ensure_default_build_directory do
+	`mkdir -p build/default`
 end
 
+desc 'Builds the default ActionScript fallback version of the extension'
+task :compile_default_library => :ensure_default_build_directory do
+	`compc +configname=air -load-config+=default/build.config -output build/default/default.swc`
+end
+
+desc 'Prepares the default ActionScript fallback version of the extension'
+task :prepare_default_library => :compile_default_library do
+	# Take the library.swf out of the swc
+	`unzip -o build/default/default.swc library.swf -d build/default`
+end
+
+############################################################################
+# iOS
+desc 'Ensures the ios build directory exists'
+task :ensure_ios_build_directory do
+	`mkdir -p build/ios`
+end
+
+desc 'Builds the release version of the native library for ios'
+task :compile_ios_library do
+  `xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj -target NaHBox2D -configuration Release`
+end
+
+desc 'Builds and copies the release version of the native library for ios to the build directory'
+task :prepare_ios_library => [:ensure_ios_build_directory, :compile_ios_library, :compile_api] do
+	`cp native/ios/NAH_B2D/build/Release-iphoneos/libNaHBox2D.a build/ios`
+
+	# Take the library.swf from the main API swc
+	`unzip -o build/NaHBox2DAPI.swc library.swf -d build/ios`
+end
+
+############################################################################
+# Extension
 desc 'Cleans the build directory by killing it'
 task :clean do
 	`rm -Rf build`
 end
 
-desc 'Builds the release version of the native library for ios'
-task :compile_ios_native_library do
-  `xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj -target NaHBox2D -configuration Release`
-end
-
-desc 'Builds and copies the release version of the native library for ios to the build directory'
-task :prepare_ios_native_library => [:ensure_build_directory, :compile_ios_native_library] do
-	`cp native/ios/NAH_B2D/build/Release-iphoneos/libNaHBox2D.a build/`
+desc 'Ensures the build directory exists'
+task :ensure_build_directory do
+	`mkdir -p build`
 end
 
 desc 'Builds the ActionScript API for the extension'
-task :compile_actionscript_api do
-	`compc +configname=air -load-config+=ane/box2d_ane.config -output build/NaHBox2DAPI.swc`
-end
-
-desc 'Nicks the library.swf from it.'
-task :prepare_actionscript_api => [:ensure_build_directory, :compile_actionscript_api]  do
-	`unzip -o build/NaHBox2DAPI.swc library.swf -d build`
+task :compile_api => :ensure_build_directory do
+	`compc +configname=air -load-config+=ane/build.config -output build/NaHBox2DAPI.swc`
 end
 
 desc 'Packages the extension'
-task :package_extension => [:ensure_build_directory, :prepare_actionscript_api, :prepare_ios_native_library] do
-	`cd build;adt -package -target ane NaHBox2D.ane ../ane/extension.xml -swc NaHBox2DAPI.swc -platform iPhone-ARM library.swf libNaHBox2D.a`
+task :package_extension => [:prepare_ios_library, :prepare_default_library] do
+	`adt -package -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a -platform default -C build/default library.swf`
 end
 
 task :default => [ :package_extension ]
