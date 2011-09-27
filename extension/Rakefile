@@ -2,12 +2,12 @@ require 'rubygems'
 require 'highline/import'
 
 def get_storepass()
-	$password = %x{cat ../certificates/.password}
+	password = %x{cat ../certificates/.password}
 	if $?.exitstatus != 0 then
-		$password = ask("Self signing key password: ") {|q| q.echo = '*'}
+		password = ask("Self signing key password: ") {|q| q.echo = '*'}
 	end
 
-	return $password
+	return password
 end
 
 ############################################################################
@@ -30,6 +30,8 @@ end
 
 ############################################################################
 # iOS
+$build_type = "Release"
+
 desc 'Ensures the ios build directory exists'
 task :ensure_ios_build_directory do
 	`mkdir -p build/ios`
@@ -37,12 +39,12 @@ end
 
 desc 'Builds the release version of the native library for ios'
 task :compile_ios_library do
-  `xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj -target NaHBox2D -configuration Release`
+  `xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj -target NaHBox2D -configuration #{$build_type}`
 end
 
-desc 'Builds and copies the release version of the native library for ios to the build directory'
+desc 'Builds and copies the version of the native library for ios to the build directory'
 task :prepare_ios_library => [:ensure_ios_build_directory, :compile_ios_library, :compile_api] do
-	`cp native/ios/NAH_B2D/build/Release-iphoneos/libNaHBox2D.a build/ios`
+	`cp native/ios/NAH_B2D/build/#{$build_type}-iphoneos/libNaHBox2D.a build/ios`
 
 	# Take the library.swf from the main API swc
 	`unzip -o build/NaHBox2DAPI.swc library.swf -d build/ios`

@@ -9,11 +9,8 @@
 /* Begin PBXBuildFile section */
 		BBCA8752142FA0640060738B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA8751142FA0640060738B /* Foundation.framework */; };
 		BBCA875F142FA2230060738B /* ExtensionLifecycle.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCA875E142FA2230060738B /* ExtensionLifecycle.m */; };
-		BBCA8761142FA24D0060738B /* ExtensionContextLifecycle.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCA8760142FA24D0060738B /* ExtensionContextLifecycle.m */; };
-		BBCA8763142FA25F0060738B /* ExtensionContextLifecycle.h in Headers */ = {isa = PBXBuildFile; fileRef = BBCA8762142FA25F0060738B /* ExtensionContextLifecycle.h */; };
 		BBCA8765142FA4670060738B /* ExtensionFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCA8764142FA4670060738B /* ExtensionFunctions.m */; };
 		BBCA8767142FA4730060738B /* ExtensionFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = BBCA8766142FA4730060738B /* ExtensionFunctions.h */; };
-		BBCA876A142FA86E0060738B /* ExtensionLifecycle.h in Headers */ = {isa = PBXBuildFile; fileRef = BBCA8769142FA86E0060738B /* ExtensionLifecycle.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -21,11 +18,8 @@
 		BBCA8751142FA0640060738B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BBCA8755142FA0640060738B /* NaHBox2D-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NaHBox2D-Prefix.pch"; sourceTree = "<group>"; };
 		BBCA875E142FA2230060738B /* ExtensionLifecycle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtensionLifecycle.m; sourceTree = "<group>"; };
-		BBCA8760142FA24D0060738B /* ExtensionContextLifecycle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtensionContextLifecycle.m; sourceTree = "<group>"; };
-		BBCA8762142FA25F0060738B /* ExtensionContextLifecycle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtensionContextLifecycle.h; sourceTree = "<group>"; };
 		BBCA8764142FA4670060738B /* ExtensionFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtensionFunctions.m; sourceTree = "<group>"; };
 		BBCA8766142FA4730060738B /* ExtensionFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtensionFunctions.h; sourceTree = "<group>"; };
-		BBCA8769142FA86E0060738B /* ExtensionLifecycle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtensionLifecycle.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,9 +81,6 @@
 			isa = PBXGroup;
 			children = (
 				BBCA875E142FA2230060738B /* ExtensionLifecycle.m */,
-				BBCA8769142FA86E0060738B /* ExtensionLifecycle.h */,
-				BBCA8760142FA24D0060738B /* ExtensionContextLifecycle.m */,
-				BBCA8762142FA25F0060738B /* ExtensionContextLifecycle.h */,
 				BBCA8764142FA4670060738B /* ExtensionFunctions.m */,
 				BBCA8766142FA4730060738B /* ExtensionFunctions.h */,
 			);
@@ -103,9 +94,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBCA8763142FA25F0060738B /* ExtensionContextLifecycle.h in Headers */,
 				BBCA8767142FA4730060738B /* ExtensionFunctions.h in Headers */,
-				BBCA876A142FA86E0060738B /* ExtensionLifecycle.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -160,7 +149,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				BBCA875F142FA2230060738B /* ExtensionLifecycle.m in Sources */,
-				BBCA8761142FA24D0060738B /* ExtensionContextLifecycle.m in Sources */,
 				BBCA8765142FA4670060738B /* ExtensionFunctions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -224,7 +212,9 @@
 		BBCA875D142FA0640060738B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/NAH_B2D.dst;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "NAH_B2D/NaHBox2D-Prefix.pch";
 				OTHER_LDFLAGS = "-ObjC";

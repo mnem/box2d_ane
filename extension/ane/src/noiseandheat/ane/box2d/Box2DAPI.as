@@ -42,9 +42,7 @@ package noiseandheat.ane.box2d
 		 */
 		function dispose():void;
 
-		/**
-		 * Says hello to the extension, which returns a reply.
-		 */
 		function hello():String;
+		function hello2():String;
 	}
 }

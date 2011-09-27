@@ -29,16 +29,56 @@
 
 #import "ExtensionFunctions.h"
 
-FREObject NAH_B2D_hello(FREContext context, void* functionData, uint32_t argc, FREObject argv[])
+/***************************************************************************
+ * Function entry points for the extension
+ *
+ * Don't forget to map the functions at the end of the file in
+ * NAHB2D_createNamedFunctionsArray
+ **************************************************************************/
+static FREObject hello(FREContext context, void* functionData, uint32_t argc, FREObject argv[])
 {
-    NSLog(@"NAH_B2D_hello enter");
-
     FREObject result;
-    uint8_t reply[] = "Why, hello there. I'm your platform native. How do you do?";
-
-    FRENewObjectFromUTF8(sizeof(reply), reply, &result);
-
-    NSLog(@"NAH_B2D_hello exit, result: %p", result);
-
+    const char* reply = "Why, hello there. I'm your platform native. How do you do?";
+    
+    FRENewObjectFromUTF8(strlen(reply) + 1, (const uint8_t*)reply, &result);
+    
     return result;
+}
+
+static FREObject hello2(FREContext context, void* functionData, uint32_t argc, FREObject argv[])
+{
+    FREObject result;
+    const char* reply = "I'm number 2 ...";
+    
+    FRENewObjectFromUTF8(strlen(reply) + 1, (const uint8_t*)reply, &result);
+    
+    return result;
+}
+
+/***************************************************************************
+ * Function map to add to the extension context
+ *
+ * Unless you want to declare prototypes for the function entry points, you
+ * should make sure this function is at the end of the file.
+ **************************************************************************/
+
+/**
+ * Helper macro to make adding functions a little less error prone. It makes
+ * the assumption that the C function names in this file map directly to
+ * the same method names in the ActionScript part of the extension.
+ */
+#define MAP_FUNCTION(fn, data) { .name = (const uint8_t*)(#fn), .functionData = (data), .function = &(fn) }
+
+uint32_t NAHB2D_createNamedFunctionsArray(const FRENamedFunction** functions)
+{
+    static FRENamedFunction function_map[] = {
+        MAP_FUNCTION(hello, NULL),
+        MAP_FUNCTION(hello2, NULL),
+    };
+    
+    // Set the map pointer
+    *functions = function_map;
+    
+    // Work out how many elements the array has
+    return sizeof(function_map) / sizeof(FRENamedFunction);
 }

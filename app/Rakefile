@@ -1,13 +1,21 @@
 require 'rubygems'
 require 'highline/import'
 
-def get_storepass()
-	$password = %x{cat ../certificates/.password}
+def get_password(lazy_hacky_password_file, prompt)
+	password = %x{cat #{lazy_hacky_password_file}}
 	if $?.exitstatus != 0 then
-		$password = ask("Self signing key password: ") {|q| q.echo = '*'}
+		password = ask("#{prompt}: ") {|q| q.echo = '*'}
 	end
 
-	return $password
+	return password
+end
+
+def get_storepass()
+	return get_password('../certificates/.password', "Self signing key password")
+end
+
+def get_iospass()
+	return get_password('../certificates/.ios-password', "iOS signing key password")
 end
 
 ############################################################################
@@ -27,9 +35,46 @@ task :compile => :ensure_build_directory do
 	%x{mxmlc +configname=air -output build/Box2DANEApp.swf src/noiseandheat/test/box2dane/Box2DANEApp.mxml -load-config+=build.config}
 end
 
-desc 'Debugs the app'
-task :debug => [:compile] do
-	%x{adl -extdir ../extension/build/ src/noiseandheat/test/box2dane/Box2DANEApp-app.xml}
+############################################################################
+# Package for air
+desc 'Ensures the air build directory exists'
+task :ensure_air_package_directory => :ensure_build_directory do
+	%x{mkdir -p build/air}
+end
+
+desc 'Packages the app for air'
+task :package_air => [:ensure_air_package_directory, :compile] do
+	package_signing = "-storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass}"
+	output_name = "build/air/Box2DANEAppInstaller.air"
+	input_files = "src/noiseandheat/test/box2dane/Box2DANEApp-app.xml -C build Box2DANEApp.swf"
+	command = "adt -package #{package_signing} #{output_name} #{input_files} -extdir ../extension/build"
+	puts command
+	%x{#{command}}
+end
+
+############################################################################
+# Package for air
+desc 'Ensures the ios build directory exists'
+task :ensure_ios_package_directory => :ensure_build_directory do
+	%x{mkdir -p build/ios}
+end
+
+desc 'Packages the app for ios'
+task :package_ios => [:ensure_ios_package_directory, :compile] do
+	package_signing = "-storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass}"
+	ios_package_signing = "-provisioning-profile ../certificates/ios-provisioning.mobileprovision -storetype pkcs12 -keystore ../certificates/ios-certificate.p12 -storepass #{get_iospass}"
+	output_name = "build/ios/Box2DANEApp.ipa"
+	input_files = "src/noiseandheat/test/box2dane/Box2DANEApp-app.xml -C build Box2DANEApp.swf"
+	%x{adt -package -target ipa-debug #{ios_package_signing} #{output_name} #{input_files} -extdir ../extension/build}
+end
+
+desc 'Packages the app for ios'
+task :quick_package_ios => [:ensure_ios_package_directory, :compile] do
+	package_signing = "-storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass}"
+	ios_package_signing = "-provisioning-profile ../certificates/ios-provisioning.mobileprovision -storetype pkcs12 -keystore ../certificates/ios-certificate.p12 -storepass #{get_iospass}"
+	output_name = "build/ios/Box2DANEApp.ipa"
+	input_files = "src/noiseandheat/test/box2dane/Box2DANEApp-app.xml -C build Box2DANEApp.swf"
+	%x{adt -package -target ipa-debug-interpreter #{ios_package_signing} #{output_name} #{input_files} -extdir ../extension/build}
 end
 
 task :default => [ :compile ]

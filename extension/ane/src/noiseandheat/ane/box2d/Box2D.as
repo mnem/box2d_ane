@@ -52,12 +52,14 @@ package noiseandheat.ane.box2d
 
 		public function hello():String
 		{
-			if(context == null)
-			{
-				throw new Error("Cannot use extension after dispose() has been called");
-			}
-
+			if(context == null) throw new Error("Cannot use extension after dispose() has been called");
 			return context.call("hello") as String;
+		}
+
+		public function hello2():String
+		{
+			if(context == null) throw new Error("Cannot use extension after dispose() has been called");
+			return context.call("hello2") as String;
 		}
 	}
 }

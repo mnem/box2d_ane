@@ -48,12 +48,14 @@ package noiseandheat.ane.box2d
 
 		public function hello():String
 		{
-			if(disposed)
-			{
-				throw new Error("Cannot use extension after dispose() has been called");
-			}
-
+			if(disposed) throw new Error("Cannot use extension after dispose() has been called");
 			return "Why, hello there. I'm your ActionScript non-native. How do you do?";
+		}
+
+		public function hello2():String
+		{
+			if(disposed) throw new Error("Cannot use extension after dispose() has been called");
+			return "Non native hello 2";
 		}
 	}
 }

@@ -8,7 +8,7 @@
 	protected function Box2DANE_applicationCompleteHandler(event:FlexEvent):void
 	{
 		var b2d:Box2D = new Box2D();
-		box2DLabel.text="I said hello, it replied: "+ b2d.hello();
+		box2DLabel.text="I said hello, it replied: " + b2d.hello() + ", " + b2d.hello2();
 	}
 	]]>
 </fx:Script>

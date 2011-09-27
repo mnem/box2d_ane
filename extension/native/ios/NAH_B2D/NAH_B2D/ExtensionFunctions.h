@@ -28,6 +28,10 @@
  */
 
 /**
- * Test function
+ * This function is called by the extension initialiser in order to map the
+ * native functions to their counterparts which can be called by the 
+ * extension's ActionScript wrapper.
+ *
+ * See: ExtensionLifecyle.m
  */
-FREObject NAH_B2D_hello(FREContext context, void* functionData, uint32_t argc, FREObject argv[]);
+uint32_t NAHB2D_createNamedFunctionsArray(const FRENamedFunction** functions);

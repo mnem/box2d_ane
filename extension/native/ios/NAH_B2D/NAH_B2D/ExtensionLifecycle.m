@@ -27,24 +27,107 @@
  * THE SOFTWARE.
  */
 
-#import "ExtensionLifecycle.h"
-#import "ExtensionContextLifecycle.h"
+/**
+ * This file contains the main entry points for dealing with the life of
+ * the native part of the extension.
+ *
+ * For full details, see:
+ *
+ *    http://www.adobe.com/content/dam/Adobe/en/devnet/devices/pdfs/DevelopingActionScriptExtensionsForAdobeAIR.pdf
+ *
+ * Or for a nice overview, see:
+ *
+ *    http://www.adobe.com/devnet/air/articles/extending-air.html
+ */
 
+#import "ExtensionFunctions.h"
+
+/***************************************************************************
+ * Function protoypes so Xcode doesn't warn about the lack of them.
+ **************************************************************************/
+void NAHB2DExtensionInitializer(void**, FREContextInitializer*, FREContextFinalizer*);
+void NAHB2DExtensionFinalizer(void*);
+
+static void ContextInitializer(void*, const uint8_t*, FREContext, uint32_t*, const FRENamedFunction**);
+static void ContextFinalizer(FREContext);
+
+/***************************************************************************
+ * Extension initialize/finalize functions
+ *
+ * Use a reasonable prefix for these function names in order to avoid
+ * accidentally clashing with other function names. If you are creating and
+ * using more than one extension, make sure you don't use the same
+ * initializer and finalizer names in the other extension :)
+ *
+ * The names of these functions should map those in the extension.xml
+ * descriptor in the platforms section. For example:
+ *
+ *
+ * <platform name="iPhone-ARM">
+ *   <applicationDeployment>
+ *     <nativeLibrary>libNaHBox2D.a</nativeLibrary>
+ *     <initializer>NAHB2DExtensionInitializer</initializer>
+ *     <finalizer>NAHB2DExtensionFinalizer</finalizer>
+ *   </applicationDeployment>
+ * </platform>
+ **************************************************************************/
+
+/**
+ * Called when the extension is created. Sets the extension context
+ * initialize and finalize functions.
+ */
 void NAHB2DExtensionInitializer(void** extensionDataOut,
                                 FREContextInitializer* contextInitializerFunctionOut,
                                 FREContextFinalizer* contextFinalizerFunctionOut)
 {
-    NSLog(@"NAHB2DExtensionInitializer enter");
-
+    // You can use extensionDataOut to store data specifc to the extension.
+    // This pointer will be passed to the extension finalizer, so if you
+    // malloc some memory here, you should use the finalizer as an
+    // opportunity to free it.
+    //
+    // Each time a new extension context is created, this pointer will
+    // also be passed to it. Useful if you want to store extension global
+    // data which each context has to be aware of.
 	*extensionDataOut = NULL;
-	*contextInitializerFunctionOut = &NAH_B2D_ContextInitializer;
-	*contextFinalizerFunctionOut = &NAH_B2D_ContextFinalizer;
-
-    NSLog(@"NAHB2DExtensionInitializer exit");
+    
+    // These lines set which functions are used to intialise new contexts
+    // created by the ActionScript part of the extension.
+	*contextInitializerFunctionOut = &ContextInitializer;
+	*contextFinalizerFunctionOut = &ContextFinalizer;
 }
 
+/**
+ * Called when the extension is being destroyed. NOTE: This may not always
+ * be called.
+ */
 void NAHB2DExtensionFinalizer(void* extData)
 {
-    NSLog(@"NAHB2DExtensionFinalizer called");
 }
 
+/***************************************************************************
+ * Extension context initialize/finalize functions
+ **************************************************************************/
+
+/**
+ * Called when the extension context object is created. This function is
+ * responsible for setting up the function map for ActionScript method names
+ * to native functions.
+ *
+ * See also: ExtensionFunctions.m
+ */
+static void ContextInitializer(void* extensionData,
+                                       const uint8_t* contextType,
+                                       FREContext context,
+                                       uint32_t* numberOfNamedFunctionsOut,
+                                       const FRENamedFunction** namedFunctionsArrayOut)
+{
+    *numberOfNamedFunctionsOut = NAHB2D_createNamedFunctionsArray(namedFunctionsArrayOut);
+}
+
+
+/**
+ * Called when the context is about to be destroyed.
+ */
+static void ContextFinalizer(FREContext context)
+{
+}
