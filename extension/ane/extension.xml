@@ -12,6 +12,13 @@
         <finalizer>NAHB2DExtensionFinalizer</finalizer>
       </applicationDeployment>
     </platform>
+    <platform name="Android-ARM">
+      <applicationDeployment>
+        <nativeLibrary>libNaHBox2D.a</nativeLibrary>
+        <initializer>NAHB2DExtensionInitializer</initializer>
+        <finalizer>NAHB2DExtensionFinalizer</finalizer>
+      </applicationDeployment>
+    </platform>
 <!--
     <platform name="default">
       <applicationDeployment />

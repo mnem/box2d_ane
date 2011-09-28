@@ -39,6 +39,7 @@ end
 
 desc 'Builds the release version of the native library for ios'
 task :compile_ios_library do
+  `xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj clean`
   `xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj -target NaHBox2D -configuration #{$build_type}`
 end
 
@@ -48,6 +49,27 @@ task :prepare_ios_library => [:ensure_ios_build_directory, :compile_ios_library,
 
 	# Take the library.swf from the main API swc
 	`unzip -o build/NaHBox2DAPI.swc library.swf -d build/ios`
+end
+
+############################################################################
+# Android
+desc 'Ensures the android build directory exists'
+task :ensure_android_build_directory do
+	`mkdir -p build/android`
+end
+
+desc 'Builds the release version of the native library for android'
+task :compile_android_library do
+  `ndk-build -C native/android clean`
+  `ndk-build -C native/android`
+end
+
+desc 'Builds and copies the version of the native library for ios to the build directory'
+task :prepare_android_library => [:ensure_android_build_directory, :compile_android_library, :compile_api] do
+	`cp native/android/obj/local/armeabi/libNaHBox2D.a build/android`
+
+	# Take the library.swf from the main API swc
+	`unzip -o build/NaHBox2DAPI.swc library.swf -d build/android`
 end
 
 ############################################################################
@@ -68,9 +90,20 @@ task :compile_api => :ensure_build_directory do
 end
 
 desc 'Packages the extension'
-task :package_extension => [:prepare_ios_library, :prepare_default_library] do
-#	%x{adt -package -storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass} -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a -platform default -C build/default library.swf}
-	%x{adt -package -storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass} -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a}
+task :package_extension => [:prepare_ios_library, :prepare_android_library, :prepare_default_library] do
+#	%x{adt -package -storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass} -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a -platform default }
+	targets = {
+		#"default" => "-C build/default library.swf",
+		"iPhone-ARM" => "-C build/ios library.swf libNaHBox2D.a",
+		"Android-ARM" => "-C build/android library.swf libNaHBox2D.a"
+	}
+	command = "adt -package"
+	air_signing = "-storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass}"
+	extension_package = "-target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc"
+	platforms = ''
+	targets.map { |plat, options| platforms = platforms + " -platform #{plat} #{options} " }
+
+	%x{#{command} #{air_signing} #{extension_package} #{platforms}}
 end
 
 task :default => [ :package_extension ]
