@@ -40,7 +40,9 @@
  *    http://www.adobe.com/devnet/air/articles/extending-air.html
  */
 
-#import "ExtensionFunctions.h"
+#include <stdlib.h>
+
+#include "ExtensionFunctions.h"
 
 /***************************************************************************
  * Function protoypes so Xcode doesn't warn about the lack of them.

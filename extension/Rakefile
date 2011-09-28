@@ -69,7 +69,8 @@ end
 
 desc 'Packages the extension'
 task :package_extension => [:prepare_ios_library, :prepare_default_library] do
-	%x{adt -package -storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass} -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a -platform default -C build/default library.swf}
+#	%x{adt -package -storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass} -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a -platform default -C build/default library.swf}
+	%x{adt -package -storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass} -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a}
 end
 
 task :default => [ :package_extension ]

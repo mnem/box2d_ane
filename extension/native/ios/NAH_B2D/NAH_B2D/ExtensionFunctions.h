@@ -27,6 +27,17 @@
  * THE SOFTWARE.
  */
 
+// Protect against multiple includes
+#ifndef NAH_EXTENSION_FUNCTIONS_H
+#define NAH_EXTENSION_FUNCTIONS_H
+
+#include "FlashRuntimeExtensions.h"
+
+// Begin avoiding unwanted name mangling
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /**
  * This function is called by the extension initialiser in order to map the
  * native functions to their counterparts which can be called by the 
@@ -35,3 +46,10 @@
  * See: ExtensionLifecyle.m
  */
 uint32_t NAHB2D_createNamedFunctionsArray(const FRENamedFunction** functions);
+
+// End avoiding unwanted name mangling
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* #ifndef NAH_EXTENSION_FUNCTIONS_H */

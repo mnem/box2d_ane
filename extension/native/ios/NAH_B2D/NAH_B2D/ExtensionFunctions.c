@@ -27,7 +27,10 @@
  * THE SOFTWARE.
  */
 
-#import "ExtensionFunctions.h"
+#include <stdlib.h>
+#include <string.h>
+
+#include "ExtensionFunctions.h"
 
 /***************************************************************************
  * Function entry points for the extension
@@ -48,7 +51,7 @@ static FREObject hello(FREContext context, void* functionData, uint32_t argc, FR
 static FREObject hello2(FREContext context, void* functionData, uint32_t argc, FREObject argv[])
 {
     FREObject result;
-    const char* reply = "I'm number 2 ...";
+    const char* reply = "I'm number 2 and I was built on " __DATE__ " at " __TIME__;
     
     FRENewObjectFromUTF8(strlen(reply) + 1, (const uint8_t*)reply, &result);
     

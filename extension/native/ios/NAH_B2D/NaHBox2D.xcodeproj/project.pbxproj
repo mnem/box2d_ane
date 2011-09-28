@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		BBCA8752142FA0640060738B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA8751142FA0640060738B /* Foundation.framework */; };
-		BBCA875F142FA2230060738B /* ExtensionLifecycle.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCA875E142FA2230060738B /* ExtensionLifecycle.m */; };
-		BBCA8765142FA4670060738B /* ExtensionFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = BBCA8764142FA4670060738B /* ExtensionFunctions.m */; };
+		BBCA875F142FA2230060738B /* ExtensionLifecycle.c in Sources */ = {isa = PBXBuildFile; fileRef = BBCA875E142FA2230060738B /* ExtensionLifecycle.c */; };
+		BBCA8765142FA4670060738B /* ExtensionFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = BBCA8764142FA4670060738B /* ExtensionFunctions.c */; };
 		BBCA8767142FA4730060738B /* ExtensionFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = BBCA8766142FA4730060738B /* ExtensionFunctions.h */; };
 /* End PBXBuildFile section */
 
@@ -17,8 +17,8 @@
 		BBCA874E142FA0640060738B /* libNaHBox2D.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNaHBox2D.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBCA8751142FA0640060738B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BBCA8755142FA0640060738B /* NaHBox2D-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NaHBox2D-Prefix.pch"; sourceTree = "<group>"; };
-		BBCA875E142FA2230060738B /* ExtensionLifecycle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtensionLifecycle.m; sourceTree = "<group>"; };
-		BBCA8764142FA4670060738B /* ExtensionFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExtensionFunctions.m; sourceTree = "<group>"; };
+		BBCA875E142FA2230060738B /* ExtensionLifecycle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ExtensionLifecycle.c; sourceTree = "<group>"; };
+		BBCA8764142FA4670060738B /* ExtensionFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ExtensionFunctions.c; sourceTree = "<group>"; };
 		BBCA8766142FA4730060738B /* ExtensionFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ExtensionFunctions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,8 +80,8 @@
 		BBCA8768142FA4920060738B /* Extension Interface */ = {
 			isa = PBXGroup;
 			children = (
-				BBCA875E142FA2230060738B /* ExtensionLifecycle.m */,
-				BBCA8764142FA4670060738B /* ExtensionFunctions.m */,
+				BBCA875E142FA2230060738B /* ExtensionLifecycle.c */,
+				BBCA8764142FA4670060738B /* ExtensionFunctions.c */,
 				BBCA8766142FA4730060738B /* ExtensionFunctions.h */,
 			);
 			name = "Extension Interface";
@@ -148,8 +148,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBCA875F142FA2230060738B /* ExtensionLifecycle.m in Sources */,
-				BBCA8765142FA4670060738B /* ExtensionFunctions.m in Sources */,
+				BBCA875F142FA2230060738B /* ExtensionLifecycle.c in Sources */,
+				BBCA8765142FA4670060738B /* ExtensionFunctions.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
