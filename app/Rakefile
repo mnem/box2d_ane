@@ -77,4 +77,18 @@ task :quick_package_ios => [:ensure_ios_package_directory, :compile] do
 	%x{adt -package -target ipa-debug-interpreter #{ios_package_signing} #{output_name} #{input_files} -extdir ../extension/build}
 end
 
-task :default => [ :compile ]
+desc 'Ensures the android build directory exists'
+task :ensure_android_package_directory => :ensure_build_directory do
+	%x{mkdir -p build/android}
+end
+
+desc 'Packages the app for android'
+task :package_android => [:ensure_android_package_directory, :compile] do
+	package_signing = "-storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass}"
+	android_package_signing = "#{package_signing}"
+	output_name = "build/android/Box2DANEApp.apk"
+	input_files = "src/noiseandheat/test/box2dane/Box2DANEApp-app.xml -C build Box2DANEApp.swf"
+	%x{adt -package -target apk #{android_package_signing} #{output_name} #{input_files} -extdir ../extension/build}
+end
+
+task :default => [ :quick_package_ios, :package_android ]
