@@ -101,7 +101,7 @@
 		BBAD61DC1434B21600D61DA1 /* b2Rope.h in Headers */ = {isa = PBXBuildFile; fileRef = BBAD61811434B21600D61DA1 /* b2Rope.h */; };
 		BBCA8752142FA0640060738B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA8751142FA0640060738B /* Foundation.framework */; };
 		BBCA875F142FA2230060738B /* ExtensionLifecycle.c in Sources */ = {isa = PBXBuildFile; fileRef = BBCA875E142FA2230060738B /* ExtensionLifecycle.c */; };
-		BBCA8765142FA4670060738B /* ExtensionFunctions.c in Sources */ = {isa = PBXBuildFile; fileRef = BBCA8764142FA4670060738B /* ExtensionFunctions.c */; };
+		BBCA8765142FA4670060738B /* ExtensionFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBCA8764142FA4670060738B /* ExtensionFunctions.cpp */; };
 		BBCA8767142FA4730060738B /* ExtensionFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = BBCA8766142FA4730060738B /* ExtensionFunctions.h */; };
 /* End PBXBuildFile section */
 
@@ -204,7 +204,7 @@
 		BBCA8751142FA0640060738B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BBCA8755142FA0640060738B /* NaHBox2D-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NaHBox2D-Prefix.pch"; sourceTree = "<group>"; };
 		BBCA875E142FA2230060738B /* ExtensionLifecycle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ExtensionLifecycle.c; path = ../../../shared/src/ExtensionLifecycle.c; sourceTree = "<group>"; };
-		BBCA8764142FA4670060738B /* ExtensionFunctions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ExtensionFunctions.c; path = ../../../shared/src/ExtensionFunctions.c; sourceTree = "<group>"; };
+		BBCA8764142FA4670060738B /* ExtensionFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ExtensionFunctions.cpp; path = ../../../shared/src/ExtensionFunctions.cpp; sourceTree = "<group>"; };
 		BBCA8766142FA4730060738B /* ExtensionFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExtensionFunctions.h; path = ../../../shared/include/ExtensionFunctions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -434,7 +434,7 @@
 			isa = PBXGroup;
 			children = (
 				BBCA875E142FA2230060738B /* ExtensionLifecycle.c */,
-				BBCA8764142FA4670060738B /* ExtensionFunctions.c */,
+				BBCA8764142FA4670060738B /* ExtensionFunctions.cpp */,
 				BBCA8766142FA4730060738B /* ExtensionFunctions.h */,
 			);
 			name = "Common Extension Interface";
@@ -549,7 +549,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BBCA875F142FA2230060738B /* ExtensionLifecycle.c in Sources */,
-				BBCA8765142FA4670060738B /* ExtensionFunctions.c in Sources */,
+				BBCA8765142FA4670060738B /* ExtensionFunctions.cpp in Sources */,
 				BBAD61831434B21600D61DA1 /* b2BroadPhase.cpp in Sources */,
 				BBAD61851434B21600D61DA1 /* b2CollideCircle.cpp in Sources */,
 				BBAD61861434B21600D61DA1 /* b2CollideEdge.cpp in Sources */,

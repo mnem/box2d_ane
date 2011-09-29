@@ -42,6 +42,8 @@ package noiseandheat.ane.box2d
 		 */
 		function dispose():void;
 
+		//function
+
 		function hello():String;
 		function hello2():String;
 	}

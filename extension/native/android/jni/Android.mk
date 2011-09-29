@@ -9,7 +9,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE    := NaHBox2D
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../shared/include
-LOCAL_SRC_FILES := ../../shared/src/ExtensionFunctions.c ../../shared/src/ExtensionLifecycle.c
+LOCAL_SRC_FILES := ../../shared/src/ExtensionFunctions.cpp ../../shared/src/ExtensionLifecycle.c
 LOCAL_SHARED_LIBRARIES := FlashRuntimeExtensions-prebuilt
 LOCAL_WHOLE_STATIC_LIBRARIES := Box2D
 

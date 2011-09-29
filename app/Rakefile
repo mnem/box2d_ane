@@ -45,11 +45,10 @@ end
 desc 'Packages the app for air'
 task :package_air => [:ensure_air_package_directory, :compile] do
 	package_signing = "-storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass}"
-	output_name = "build/air/Box2DANEAppInstaller.air"
+	output_name = "build/air/Box2DANEApp.air"
 	input_files = "src/noiseandheat/test/box2dane/Box2DANEApp-app.xml -C build Box2DANEApp.swf"
-	command = "adt -package #{package_signing} #{output_name} #{input_files} -extdir ../extension/build"
-	puts command
-	%x{#{command}}
+	puts "adt -package #{package_signing} #{output_name} #{input_files} -extdir ../extension/build"
+	%x{adt -package #{package_signing} #{output_name} #{input_files} -extdir ../extension/build}
 end
 
 ############################################################################

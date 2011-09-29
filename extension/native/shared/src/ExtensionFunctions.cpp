@@ -70,9 +70,11 @@ static FREObject hello2(FREContext context, void* functionData, uint32_t argc, F
  * the assumption that the C function names in this file map directly to
  * the same method names in the ActionScript part of the extension.
  */
-#define MAP_FUNCTION(fn, data) { .name = (const uint8_t*)(#fn), .functionData = (data), .function = &(fn) }
+// This one is C99 only. I hate C++. It's so backwards.
+//#define MAP_FUNCTION(fn, data) { .name = (const uint8_t*)(#fn), .functionData = (data), .function = &(fn) }
+#define MAP_FUNCTION(fn, data) { (const uint8_t*)(#fn), (data), &(fn) }
 
-uint32_t NAHB2D_createNamedFunctionsArray(const FRENamedFunction** functions)
+extern "C" uint32_t NAHB2D_createNamedFunctionsArray(const FRENamedFunction** functions)
 {
     static FRENamedFunction function_map[] = {
         MAP_FUNCTION(hello, NULL),
