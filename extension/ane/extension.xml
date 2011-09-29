@@ -14,7 +14,7 @@
     </platform>
     <platform name="Android-ARM">
       <applicationDeployment>
-        <nativeLibrary>libNaHBox2D.a</nativeLibrary>
+        <nativeLibrary>libNaHBox2D.so</nativeLibrary>
         <initializer>NAHB2DExtensionInitializer</initializer>
         <finalizer>NAHB2DExtensionFinalizer</finalizer>
       </applicationDeployment>

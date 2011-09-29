@@ -53,7 +53,7 @@ task :package_air => [:ensure_air_package_directory, :compile] do
 end
 
 ############################################################################
-# Package for air
+# Package for ios
 desc 'Ensures the ios build directory exists'
 task :ensure_ios_package_directory => :ensure_build_directory do
 	%x{mkdir -p build/ios}
@@ -77,6 +77,8 @@ task :quick_package_ios => [:ensure_ios_package_directory, :compile] do
 	%x{adt -package -target ipa-debug-interpreter #{ios_package_signing} #{output_name} #{input_files} -extdir ../extension/build}
 end
 
+############################################################################
+# Package for android
 desc 'Ensures the android build directory exists'
 task :ensure_android_package_directory => :ensure_build_directory do
 	%x{mkdir -p build/android}

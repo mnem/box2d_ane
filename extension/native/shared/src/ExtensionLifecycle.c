@@ -91,7 +91,7 @@ void NAHB2DExtensionInitializer(void** extensionDataOut,
     // also be passed to it. Useful if you want to store extension global
     // data which each context has to be aware of.
 	*extensionDataOut = NULL;
-    
+
     // These lines set which functions are used to intialise new contexts
     // created by the ActionScript part of the extension.
 	*contextInitializerFunctionOut = &ContextInitializer;

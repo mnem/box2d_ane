@@ -66,7 +66,7 @@ end
 
 desc 'Builds and copies the version of the native library for ios to the build directory'
 task :prepare_android_library => [:ensure_android_build_directory, :compile_android_library, :compile_api] do
-	`cp native/android/obj/local/armeabi/libNaHBox2D.a build/android`
+	`cp native/android/libs/armeabi/libNaHBox2D.so build/android`
 
 	# Take the library.swf from the main API swc
 	`unzip -o build/NaHBox2DAPI.swc library.swf -d build/android`
@@ -91,11 +91,10 @@ end
 
 desc 'Packages the extension'
 task :package_extension => [:prepare_ios_library, :prepare_android_library, :prepare_default_library] do
-#	%x{adt -package -storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass} -target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc -platform iPhone-ARM -C build/ios library.swf libNaHBox2D.a -platform default }
 	targets = {
 		#"default" => "-C build/default library.swf",
 		"iPhone-ARM" => "-C build/ios library.swf libNaHBox2D.a",
-		"Android-ARM" => "-C build/android library.swf libNaHBox2D.a"
+		"Android-ARM" => "-C build/android library.swf libNaHBox2D.so"
 	}
 	command = "adt -package"
 	air_signing = "-storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass}"

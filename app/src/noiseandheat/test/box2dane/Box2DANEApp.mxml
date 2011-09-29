@@ -7,8 +7,19 @@
 
 	protected function Box2DANE_applicationCompleteHandler(event:FlexEvent):void
 	{
-		var b2d:Box2D = new Box2D();
-		box2DLabel.text="I said hello, it replied: " + b2d.hello() + ", " + b2d.hello2();
+		trace("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		output.text = "About to ask..";
+
+    	try
+		{
+			var b2d:Box2D = new Box2D();
+			box2DLabel.text="I said hello, it replied: " + b2d.hello() + ", " + b2d.hello2();
+			output.text += "\n Finished asking";
+		}
+		catch(e:Error)
+		{
+			output.text += "\n Failed: " + e;
+		}
 	}
 	]]>
 </fx:Script>
@@ -19,4 +30,5 @@
     <s:VerticalLayout />
   </s:layout>
   <s:Label id="box2DLabel" />
+  <s:Label id="output" />
 </s:Application>
