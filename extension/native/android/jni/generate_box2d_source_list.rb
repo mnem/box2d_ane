@@ -12,7 +12,8 @@ end
 
 def addFile(filename)
 	print("Adding file '#{filename}'\n")
-	$sourcefiles.push('LOCAL_SRC_FILES := ' + filename)
+	char = $sourcefiles.length == 0 ? ':' : '+'
+	$sourcefiles.push("LOCAL_SRC_FILES #{char}= " + filename)
 end
 
 def processSources()

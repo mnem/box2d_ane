@@ -11,6 +11,6 @@ LOCAL_MODULE    := NaHBox2D
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../shared/include
 LOCAL_SRC_FILES := ../../shared/src/ExtensionFunctions.c ../../shared/src/ExtensionLifecycle.c
 LOCAL_SHARED_LIBRARIES := FlashRuntimeExtensions-prebuilt
-LOCAL_STATIC_LIBRARIES := Box2D
+LOCAL_WHOLE_STATIC_LIBRARIES := Box2D
 
 include $(BUILD_SHARED_LIBRARY)
