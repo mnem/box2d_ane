@@ -90,10 +90,11 @@ task :compile_api => :ensure_build_directory do
 end
 
 desc 'Packages the extension'
-task :package_extension => [:prepare_ios_library, :prepare_android_library, :prepare_default_library] do
+task :package_extension => [:prepare_android_library] do
+#task :package_extension => [:prepare_ios_library, :prepare_android_library, :prepare_default_library] do
 	targets = {
 		#"default" => "-C build/default library.swf",
-		"iPhone-ARM" => "-C build/ios library.swf libNaHBox2D.a",
+		#"iPhone-ARM" => "-C build/ios library.swf libNaHBox2D.a",
 		"Android-ARM" => "-C build/android library.swf libNaHBox2D.so"
 	}
 	command = "adt -package"

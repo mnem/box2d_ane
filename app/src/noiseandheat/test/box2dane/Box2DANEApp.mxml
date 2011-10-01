@@ -3,23 +3,43 @@
   <fx:Script>
     <![CDATA[
 	import noiseandheat.ane.box2d.Box2D;
+	import noiseandheat.ane.box2d.events.Box2DExtensionErrorEvent;
 	import mx.events.FlexEvent;
 
 	protected function Box2DANE_applicationCompleteHandler(event:FlexEvent):void
 	{
-		trace("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		output.text = "About to ask..";
+		output.width = stage.stageWidth;
+
+		output.text = "About to ask...";
 
     	try
 		{
 			var b2d:Box2D = new Box2D();
-			box2DLabel.text="I said hello, it replied: " + b2d.hello() + ", " + b2d.hello2();
-			output.text += "\n Finished asking";
+
+			b2d.addEventListener(Box2DExtensionErrorEvent.INTERNAL_ERROR, onExtensionError);
+
+			output.text += "\n\ngetNativeBuildStamp: " + b2d.getNativeBuildStamp();
+
+			var v:Object = b2d.getBox2DVersion();
+			output.text += "\n\ngetBox2DVersion: " + v.major + "," + v.minor + "," + v.revision;
+
+			output.text += "\n\nSetting gravity to 0, -10";
+			b2d.setWorldGravity({x:0, y:-10});
+
+			output.text += "\n\ncreateBody: " + b2d.createBody(null);
+			output.text += "\n\ncreateBody: " + b2d.createBody(null);
 		}
 		catch(e:Error)
 		{
-			output.text += "\n Failed: " + e;
+			output.text += "\n\n Failed: " + e;
 		}
+
+		output.text += "\n\n Finished";
+	}
+
+	protected function onExtensionError(event:Box2DExtensionErrorEvent):void
+	{
+		output.text += "\nEXTENSION ERROR: " + event.message + "\n";
 	}
 	]]>
 </fx:Script>
@@ -29,6 +49,5 @@
   <s:layout>
     <s:VerticalLayout />
   </s:layout>
-  <s:Label id="box2DLabel" />
-  <s:Label id="output" />
+  <s:Label id="output" fontSize="16" />
 </s:Application>

@@ -5,19 +5,19 @@
  *
  *
  * Licensed under the MIT license:
- * 
+ *
  *     http://www.opensource.org/licenses/mit-license.php
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,27 +26,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-#include "SessionContext.h"
-
-SessionContext::SessionContext(float32 gX, float32 gY, bool allowSleeping) 
-    : world(b2Vec2(gX, gY))
-{  
-    world.SetAllowSleeping(allowSleeping);
-    nextFreeID = 0;
-}
-
-b2Body* SessionContext::FindBody(uintptr_t bodyID)
+package noiseandheat.ane.box2d.errors
 {
-    void *vpID = (void*)bodyID;
-    
-    for (b2Body* b = world.GetBodyList(); b; b = b->GetNext())
-    {
-        if (b->GetUserData() == vpID)
-        {
-            return b;
-        }
-    }
-    
-    return NULL;
+	public class NullExtensionContextError
+	extends Error
+	{
+		public function NullExtensionContextError()
+		{
+			super("Extension context is null. This may be because dispose() was called (which renders this instance of the class unusable), or the class did not initialise correctly on construction.");
+		}
+	}
 }

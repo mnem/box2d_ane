@@ -39,12 +39,6 @@ extern "C" {
 #endif
 
 /**
- * Handy define to try and notify the extension host that a horrible error
- * has occured
- */
-#define DISPATCH_INTERNAL_ERROR(extensionContext, message) FREDispatchStatusEventAsync((extensionContext), (uint8_t*)"INTERNAL_ERROR", (uint8_t*)(message))
-
-/**
  * This function is called by the extension initialiser in order to map the
  * native functions to their counterparts which can be called by the 
  * extension's ActionScript wrapper.

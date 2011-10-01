@@ -296,3 +296,60 @@ float32 ANE_b2Vec2::read_y(FREObject o)
 {
     return GetPropertyAsDouble(o, AS_PROP_x);
 }
+
+/***************************************************************************
+ * ANE_b2FixtureDef
+ **************************************************************************/
+const uint8 ANE_b2FixtureDef::AS_PROP_friction[] = "friction";
+const uint8 ANE_b2FixtureDef::AS_PROP_restitution[] = "restitution";
+const uint8 ANE_b2FixtureDef::AS_PROP_density[] = "density";
+const uint8 ANE_b2FixtureDef::AS_PROP_isSensor[] = "isSensor";
+
+ANE_b2FixtureDef::ANE_b2FixtureDef(FREObject source) : b2FixtureDef()
+{
+    FREObjectType type;
+    if (FREGetObjectType(source, &type) == FRE_OK 
+        && type == FRE_TYPE_OBJECT)
+    {
+        SET_PROPERTY_FROM_AS_OBJECT(_friction, source);
+        SET_PROPERTY_FROM_AS_OBJECT(_restitution, source);
+        SET_PROPERTY_FROM_AS_OBJECT(_density, source);
+        SET_PROPERTY_FROM_AS_OBJECT(_isSensor, source);
+    }
+}
+
+void ANE_b2FixtureDef::set_friction(FREObject o)
+{
+    double value;
+    if (FREGetObjectAsDouble(o, &value) == FRE_OK)
+    {
+        friction = value;
+    }
+}
+
+void ANE_b2FixtureDef::set_restitution(FREObject o)
+{
+    double value;
+    if (FREGetObjectAsDouble(o, &value) == FRE_OK)
+    {
+        restitution = value;
+    }
+}
+
+void ANE_b2FixtureDef::set_density(FREObject o)
+{
+    double value;
+    if (FREGetObjectAsDouble(o, &value) == FRE_OK)
+    {
+        density = value;
+    }
+}
+
+void ANE_b2FixtureDef::set_isSensor(FREObject o)
+{
+    uint32_t value;
+    if (FREGetObjectAsBool(o, &value) == FRE_OK)
+    {
+        isSensor = value;
+    }
+}

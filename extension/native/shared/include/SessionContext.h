@@ -32,6 +32,7 @@
 #define NaHBox2D_SessionContext_h
 
 #include "Box2D/Box2D.h"
+#include "Box2DExtensionHelper.h"
 
 class SessionContext
 {
@@ -39,6 +40,16 @@ public:
     b2World world;
 
 	SessionContext(float32 gX = 0.0, float32 gY = -10.0, bool allowSleeping = true);
+    
+    uintptr_t ClaimNextFreeID() 
+    {
+        return nextFreeID++;
+    };
+    
+    b2Body* FindBody(uintptr_t bodyID);
+
+private:
+    uintptr_t nextFreeID;
 };
 
 #endif /* #ifndef NaHBox2D_SessionContext_h */

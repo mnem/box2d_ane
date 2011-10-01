@@ -33,6 +33,12 @@
 #include "FlashRuntimeExtensions.h"
 #include "Box2D/Box2D.h"
 
+/**
+ * Handy define to try and notify the extension host that a horrible error
+ * has occured
+ */
+#define DISPATCH_INTERNAL_ERROR(extensionContext, message) FREDispatchStatusEventAsync((extensionContext), (uint8_t*)"INTERNAL_ERROR", (uint8_t*)(message))
+
 int32_t GetPropertyAsInt32( FREObject source, const uint8_t* propertyName );
 uint32_t GetPropertyAsUint32( FREObject source,const uint8_t* propertyName );
 double GetPropertyAsDouble( FREObject source, const uint8_t* propertyName );
@@ -96,6 +102,24 @@ public:
     
     static float32 read_x(FREObject source);
     static float32 read_y(FREObject source);
+};
+
+class ANE_b2FixtureDef : public b2FixtureDef
+{
+public:
+    ANE_b2FixtureDef(FREObject source);
+    
+    static const uint8 AS_PROP_friction[];
+    void set_friction(FREObject);
+    
+    static const uint8 AS_PROP_restitution[];
+    void set_restitution(FREObject);
+    
+    static const uint8 AS_PROP_density[];
+    void set_density(FREObject);
+    
+    static const uint8 AS_PROP_isSensor[];
+    void set_isSensor(FREObject);
 };
 
 #endif /* NaHBox2D_Box2DExtensionHelper_h */

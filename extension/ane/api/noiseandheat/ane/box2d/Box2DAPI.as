@@ -28,11 +28,19 @@
  */
 package noiseandheat.ane.box2d
 {
+	import flash.events.IEventDispatcher;
+
 	/**
-	 * Public API for the Box2D native class. Largely used to ensure
-	 * that the AS only default implementation presents the same API
+	 * Public API for the Box2D native class.
+	 *
+	 * At the moment, the extension only allows 1 world to be simulated so
+	 * there are no functions to explicitly create a world. It is implicitly
+	 * created when you create a new class which implements Box2DAPI.
+	 *
+	 * See: noiseandheat.ane.box2d.Box2D
 	 */
 	public interface Box2DAPI
+	extends IEventDispatcher
 	{
 		/**
 		 * Disposes of the extension. You cannot use this instance
@@ -42,10 +50,63 @@ package noiseandheat.ane.box2d
 		 */
 		function dispose():void;
 
-		function getBuildStamp():String;
+		/**
+		 * Returns the build stamp for the native code library in use.
+		 */
+        function getNativeBuildStamp():String;
+		/**
+		 * Returns an object representing the Box2D version in use. This
+		 * is represented in the object by int properties named "major",
+		 * "minor" and "revision".
+		 */
+        function getBox2DVersion():Object;
 
-		function setWorldGravity(xComponent:Number, yComponent:Number):void;
+		/**
+		 * Sets the gravity in the world.
+		 *
+		 * @param object containing:
+		 *    x:Number
+		 *    y:Number
+		 */
+        function setWorldGravity(b2Vec2:Object):void;
 
-		function createWorldBody(bodyDefinition:Object):void;
+		/**
+		 * Creates a new body in the world from the supplied definition. You
+		 * must use the returned numeric ID to refer to the body in the
+		 * future. If you don't store it somewhere, the poor little body
+		 * will be orphaned in the world.
+		 *
+ 		 * @param b2BodyDef - object containing none or more of:
+ 		 *    angle:Number
+		 *    angularVelocity:Number
+		 *    linearDamping:Number
+		 *    angularDamping:Number
+		 *    gravityScale:Number
+		 *    allowSleep:Boolean
+		 *    awake:Boolean
+		 *    fixedRotation:Boolean
+		 *    bullet:Boolean
+		 *    active:Boolean
+		 *    type:int <0 = b2_staticBody, 1 = b2_kinematicBody, 2 = b2_dynamicBody>
+		 *    linearVelocity:Object {x:Number, y:Number}
+		 *    position:Object {x:Number, y:Number}
+		 */
+        function createBody(b2BodyDef:Object):uint;
+
+		/**
+		 * Creates a new fixture on a body in the world from the supplied
+		 * shape and definition. You must use the returned numeric ID to
+		 * refer to the fixture in the future.
+		 *
+		 * @param bodyID - ID of the body that was returned by createBody
+		 * @param width - Width of the box
+		 * @param height - Height of the box
+ 		 * @param b2FixtureDef - object containing none or more of:
+ 		 *    friction:Number
+		 *    restitution:Number
+		 *    density:Number
+		 *    isSensor:Boolean
+		 */
+        function createBodyFixtureWithBoxShape(bodyID:uint, width:Number, height:Number, b2FixtureDef:Object = null):uint;
 	}
 }
