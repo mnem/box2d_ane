@@ -43,12 +43,13 @@
 #include <stdlib.h>
 
 #include "ExtensionFunctions.h"
+#include "SessionContext.h"
 
 /***************************************************************************
  * Function protoypes so Xcode doesn't warn about the lack of them.
  **************************************************************************/
-void NAHB2DExtensionInitializer(void**, FREContextInitializer*, FREContextFinalizer*);
-void NAHB2DExtensionFinalizer(void*);
+extern "C" void NAHB2DExtensionInitializer(void**, FREContextInitializer*, FREContextFinalizer*);
+extern "C" void NAHB2DExtensionFinalizer(void*);
 
 static void ContextInitializer(void*, const uint8_t*, FREContext, uint32_t*, const FRENamedFunction**);
 static void ContextFinalizer(FREContext);
@@ -78,9 +79,9 @@ static void ContextFinalizer(FREContext);
  * Called when the extension is created. Sets the extension context
  * initialize and finalize functions.
  */
-void NAHB2DExtensionInitializer(void** extensionDataOut,
-                                FREContextInitializer* contextInitializerFunctionOut,
-                                FREContextFinalizer* contextFinalizerFunctionOut)
+extern "C" void NAHB2DExtensionInitializer(void** extensionDataOut,
+                                           FREContextInitializer* contextInitializerFunctionOut,
+                                           FREContextFinalizer* contextFinalizerFunctionOut)
 {
     // You can use extensionDataOut to store data specifc to the extension.
     // This pointer will be passed to the extension finalizer, so if you
@@ -102,7 +103,7 @@ void NAHB2DExtensionInitializer(void** extensionDataOut,
  * Called when the extension is being destroyed. NOTE: This may not always
  * be called.
  */
-void NAHB2DExtensionFinalizer(void* extData)
+extern "C" void NAHB2DExtensionFinalizer(void* extData)
 {
 }
 
@@ -118,12 +119,17 @@ void NAHB2DExtensionFinalizer(void* extData)
  * See also: ExtensionFunctions.m
  */
 static void ContextInitializer(void* extensionData,
-                                       const uint8_t* contextType,
-                                       FREContext context,
-                                       uint32_t* numberOfNamedFunctionsOut,
-                                       const FRENamedFunction** namedFunctionsArrayOut)
+                               const uint8_t* contextType,
+                               FREContext context,
+                               uint32_t* numberOfNamedFunctionsOut,
+                               const FRENamedFunction** namedFunctionsArrayOut)
 {
     *numberOfNamedFunctionsOut = NAHB2D_createNamedFunctionsArray(namedFunctionsArrayOut);
+    FREResult result = FRESetContextNativeData(context, new SessionContext());
+    if (result != FRE_OK) 
+    {
+        DISPATCH_INTERNAL_ERROR(context, "Could not set context native data");
+    }
 }
 
 
@@ -132,4 +138,9 @@ static void ContextInitializer(void* extensionData,
  */
 static void ContextFinalizer(FREContext context)
 {
+    void* sc; 
+    if( FREGetContextNativeData(context, &sc) == FRE_OK && sc != NULL )
+    {
+        delete (SessionContext*)sc;
+    }
 }

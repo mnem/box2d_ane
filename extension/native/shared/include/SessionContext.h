@@ -26,26 +26,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package noiseandheat.ane.box2d
+
+// Protect against multiple includes
+#ifndef NaHBox2D_SessionContext_h
+#define NaHBox2D_SessionContext_h
+
+#include "Box2D/Box2D.h"
+
+class SessionContext
 {
-	/**
-	 * Public API for the Box2D native class. Largely used to ensure
-	 * that the AS only default implementation presents the same API
-	 */
-	public interface Box2DAPI
-	{
-		/**
-		 * Disposes of the extension. You cannot use this instance
-		 * of the extension after calling this, so do it when you
-		 * are finished with it and want to force it to clean up
-		 * without waiting for the garbage collector to do it.
-		 */
-		function dispose():void;
+public:
+    b2World world;
 
-		function getBuildStamp():String;
+	SessionContext(float32 gX = 0.0, float32 gY = -10.0, bool allowSleeping = true);
+};
 
-		function setWorldGravity(xComponent:Number, yComponent:Number):void;
-
-		function createWorldBody(bodyDefinition:Object):void;
-	}
-}
+#endif /* #ifndef NaHBox2D_SessionContext_h */

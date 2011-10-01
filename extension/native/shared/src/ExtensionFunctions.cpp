@@ -31,6 +31,48 @@
 #include <string.h>
 
 #include "ExtensionFunctions.h"
+#include "SessionContext.h"
+#include "Box2DExtensionHelper.h"
+
+/**
+ * Useful shortand for declaring a function that will be exposed to ANE
+ */
+#define DEFINE_ANE_FUNCTION(fn) static FREObject (fn)(FREContext context, void* functionData, uint32_t argc, FREObject argv[])
+
+/**
+ * Fetches the session context and checks it's vaguely valid
+ */
+#define GET_session_context(variable)                                                                   \
+    SessionContext* (variable);                                                                         \
+    if( FREGetContextNativeData(context, (void**)(&(variable))) != FRE_OK )                             \
+    {                                                                                                   \
+        DISPATCH_INTERNAL_ERROR(context, "Could not retrieve context in ANE function");                 \
+    }                                                                                                   \
+    if( (variable) == NULL )                                                                            \
+    {                                                                                                   \
+        DISPATCH_INTERNAL_ERROR(context, "Session context seems to be NULL. I'll probably die now");    \
+    }                                                                                                   \
+
+/**
+ * Helper macros for the lazy
+ */
+#define GET_parameter_as_object(variable, position) \
+    FREObject (variable) = NULL;                    \
+    if((position) >= 0 && (position) < argc)        \
+    {                                               \
+        (variable) = argv[(position)];              \
+    }                                               \
+
+#define GET_parameter_as_float32(variable, position)                                \
+    float32 (variable) = 0.0f;                                                      \
+    double _double_##variable = 0.0f;                                               \
+    if((position) >= 0 && (position) < argc                                         \
+       && FREGetObjectAsDouble(argv[(position)], &_double_##variable) == FRE_OK)    \
+    {                                                                               \
+        (variable) = _double_##variable;                                            \
+    }                                                                               \
+
+
 
 /***************************************************************************
  * Function entry points for the extension
@@ -38,24 +80,40 @@
  * Don't forget to map the functions at the end of the file in
  * NAHB2D_createNamedFunctionsArray
  **************************************************************************/
-static FREObject hello(FREContext context, void* functionData, uint32_t argc, FREObject argv[])
+DEFINE_ANE_FUNCTION(getBuildStamp)
 {
     FREObject result;
-    const char* reply = "Why, hello there. I'm your platform native. How do you do?";
+    const char* reply = "I was built on " __DATE__ " at " __TIME__;
     
     FRENewObjectFromUTF8(strlen(reply) + 1, (const uint8_t*)reply, &result);
     
     return result;
 }
 
-static FREObject hello2(FREContext context, void* functionData, uint32_t argc, FREObject argv[])
+DEFINE_ANE_FUNCTION(setWorldGravity)
 {
-    FREObject result;
-    const char* reply = "I'm number 2 and I was built on " __DATE__ " at " __TIME__;
+    GET_parameter_as_float32(xComponent, 0);
+    GET_parameter_as_float32(yComponent, 1);
+    GET_session_context(sc);
+    sc->world.SetGravity(b2Vec2(xComponent, yComponent));
     
-    FRENewObjectFromUTF8(strlen(reply) + 1, (const uint8_t*)reply, &result);
+    return NULL;
+}
+
+DEFINE_ANE_FUNCTION(createWorldBody)
+{
+    GET_parameter_as_object(bodyDefinition, 0);
+    if (bodyDefinition != NULL)
+    {
+        GET_session_context(sc);
+        
+        ANE_b2BodyDef groundBodyDef(bodyDefinition);
+        b2Body* groundBody = sc->world.CreateBody(&groundBodyDef);
+        
+//        session_context->world.SetGravity(b2Vec2(xComponent, yComponent));
+    }
     
-    return result;
+    return NULL;
 }
 
 /***************************************************************************
@@ -77,8 +135,9 @@ static FREObject hello2(FREContext context, void* functionData, uint32_t argc, F
 extern "C" uint32_t NAHB2D_createNamedFunctionsArray(const FRENamedFunction** functions)
 {
     static FRENamedFunction function_map[] = {
-        MAP_FUNCTION(hello, NULL),
-        MAP_FUNCTION(hello2, NULL),
+        MAP_FUNCTION(getBuildStamp, NULL),
+        MAP_FUNCTION(setWorldGravity, NULL),
+        MAP_FUNCTION(createWorldBody, NULL),
     };
     
     // Set the map pointer

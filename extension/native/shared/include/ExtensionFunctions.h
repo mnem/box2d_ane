@@ -28,8 +28,8 @@
  */
 
 // Protect against multiple includes
-#ifndef NAH_EXTENSION_FUNCTIONS_H
-#define NAH_EXTENSION_FUNCTIONS_H
+#ifndef NaHBox2D_ExtensionFunctions_h
+#define NaHBox2D_ExtensionFunctions_h
 
 #include "FlashRuntimeExtensions.h"
 
@@ -37,6 +37,12 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/**
+ * Handy define to try and notify the extension host that a horrible error
+ * has occured
+ */
+#define DISPATCH_INTERNAL_ERROR(extensionContext, message) FREDispatchStatusEventAsync((extensionContext), (uint8_t*)"INTERNAL_ERROR", (uint8_t*)(message))
 
 /**
  * This function is called by the extension initialiser in order to map the
@@ -52,4 +58,4 @@ uint32_t NAHB2D_createNamedFunctionsArray(const FRENamedFunction** functions);
 }
 #endif
 
-#endif /* #ifndef NAH_EXTENSION_FUNCTIONS_H */
+#endif /* #ifndef NaHBox2D_ExtensionFunctions_h */

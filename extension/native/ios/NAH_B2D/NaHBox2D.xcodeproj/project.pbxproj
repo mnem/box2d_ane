@@ -99,8 +99,12 @@
 		BBAD61DA1434B21600D61DA1 /* b2WheelJoint.h in Headers */ = {isa = PBXBuildFile; fileRef = BBAD617E1434B21600D61DA1 /* b2WheelJoint.h */; };
 		BBAD61DB1434B21600D61DA1 /* b2Rope.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBAD61801434B21600D61DA1 /* b2Rope.cpp */; };
 		BBAD61DC1434B21600D61DA1 /* b2Rope.h in Headers */ = {isa = PBXBuildFile; fileRef = BBAD61811434B21600D61DA1 /* b2Rope.h */; };
+		BBAD61DE143518B900D61DA1 /* SessionContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBAD61DD143518B900D61DA1 /* SessionContext.cpp */; };
+		BBAD61E0143518CB00D61DA1 /* SessionContext.h in Headers */ = {isa = PBXBuildFile; fileRef = BBAD61DF143518CB00D61DA1 /* SessionContext.h */; };
+		BBAD61E2143726D800D61DA1 /* Box2DExtensionHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = BBAD61E1143726D800D61DA1 /* Box2DExtensionHelper.h */; };
+		BBAD61E414372E8700D61DA1 /* Box2DExtensionHelper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBAD61E314372E8700D61DA1 /* Box2DExtensionHelper.cpp */; };
 		BBCA8752142FA0640060738B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BBCA8751142FA0640060738B /* Foundation.framework */; };
-		BBCA875F142FA2230060738B /* ExtensionLifecycle.c in Sources */ = {isa = PBXBuildFile; fileRef = BBCA875E142FA2230060738B /* ExtensionLifecycle.c */; };
+		BBCA875F142FA2230060738B /* ExtensionLifecycle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBCA875E142FA2230060738B /* ExtensionLifecycle.cpp */; };
 		BBCA8765142FA4670060738B /* ExtensionFunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBCA8764142FA4670060738B /* ExtensionFunctions.cpp */; };
 		BBCA8767142FA4730060738B /* ExtensionFunctions.h in Headers */ = {isa = PBXBuildFile; fileRef = BBCA8766142FA4730060738B /* ExtensionFunctions.h */; };
 /* End PBXBuildFile section */
@@ -200,10 +204,14 @@
 		BBAD617E1434B21600D61DA1 /* b2WheelJoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = b2WheelJoint.h; sourceTree = "<group>"; };
 		BBAD61801434B21600D61DA1 /* b2Rope.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = b2Rope.cpp; sourceTree = "<group>"; };
 		BBAD61811434B21600D61DA1 /* b2Rope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = b2Rope.h; sourceTree = "<group>"; };
+		BBAD61DD143518B900D61DA1 /* SessionContext.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SessionContext.cpp; path = ../../../shared/src/SessionContext.cpp; sourceTree = "<group>"; };
+		BBAD61DF143518CB00D61DA1 /* SessionContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SessionContext.h; path = ../../../shared/include/SessionContext.h; sourceTree = "<group>"; };
+		BBAD61E1143726D800D61DA1 /* Box2DExtensionHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Box2DExtensionHelper.h; path = ../../../shared/include/Box2DExtensionHelper.h; sourceTree = "<group>"; };
+		BBAD61E314372E8700D61DA1 /* Box2DExtensionHelper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Box2DExtensionHelper.cpp; path = ../../../shared/src/Box2DExtensionHelper.cpp; sourceTree = "<group>"; };
 		BBCA874E142FA0640060738B /* libNaHBox2D.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libNaHBox2D.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BBCA8751142FA0640060738B /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		BBCA8755142FA0640060738B /* NaHBox2D-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NaHBox2D-Prefix.pch"; sourceTree = "<group>"; };
-		BBCA875E142FA2230060738B /* ExtensionLifecycle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ExtensionLifecycle.c; path = ../../../shared/src/ExtensionLifecycle.c; sourceTree = "<group>"; };
+		BBCA875E142FA2230060738B /* ExtensionLifecycle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ExtensionLifecycle.cpp; path = ../../../shared/src/ExtensionLifecycle.cpp; sourceTree = "<group>"; };
 		BBCA8764142FA4670060738B /* ExtensionFunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ExtensionFunctions.cpp; path = ../../../shared/src/ExtensionFunctions.cpp; sourceTree = "<group>"; };
 		BBCA8766142FA4730060738B /* ExtensionFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExtensionFunctions.h; path = ../../../shared/include/ExtensionFunctions.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -433,9 +441,13 @@
 		BBCA8768142FA4920060738B /* Common Extension Interface */ = {
 			isa = PBXGroup;
 			children = (
-				BBCA875E142FA2230060738B /* ExtensionLifecycle.c */,
+				BBCA875E142FA2230060738B /* ExtensionLifecycle.cpp */,
 				BBCA8764142FA4670060738B /* ExtensionFunctions.cpp */,
 				BBCA8766142FA4730060738B /* ExtensionFunctions.h */,
+				BBAD61DD143518B900D61DA1 /* SessionContext.cpp */,
+				BBAD61DF143518CB00D61DA1 /* SessionContext.h */,
+				BBAD61E1143726D800D61DA1 /* Box2DExtensionHelper.h */,
+				BBAD61E314372E8700D61DA1 /* Box2DExtensionHelper.cpp */,
 			);
 			name = "Common Extension Interface";
 			sourceTree = "<group>";
@@ -495,6 +507,8 @@
 				BBAD61D81434B21600D61DA1 /* b2WeldJoint.h in Headers */,
 				BBAD61DA1434B21600D61DA1 /* b2WheelJoint.h in Headers */,
 				BBAD61DC1434B21600D61DA1 /* b2Rope.h in Headers */,
+				BBAD61E0143518CB00D61DA1 /* SessionContext.h in Headers */,
+				BBAD61E2143726D800D61DA1 /* Box2DExtensionHelper.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -548,7 +562,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBCA875F142FA2230060738B /* ExtensionLifecycle.c in Sources */,
+				BBCA875F142FA2230060738B /* ExtensionLifecycle.cpp in Sources */,
 				BBCA8765142FA4670060738B /* ExtensionFunctions.cpp in Sources */,
 				BBAD61831434B21600D61DA1 /* b2BroadPhase.cpp in Sources */,
 				BBAD61851434B21600D61DA1 /* b2CollideCircle.cpp in Sources */,
@@ -595,6 +609,8 @@
 				BBAD61D71434B21600D61DA1 /* b2WeldJoint.cpp in Sources */,
 				BBAD61D91434B21600D61DA1 /* b2WheelJoint.cpp in Sources */,
 				BBAD61DB1434B21600D61DA1 /* b2Rope.cpp in Sources */,
+				BBAD61DE143518B900D61DA1 /* SessionContext.cpp in Sources */,
+				BBAD61E414372E8700D61DA1 /* Box2DExtensionHelper.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
