@@ -28,12 +28,12 @@
  */
 package noiseandheat.ane.box2d.errors
 {
-    public class NullExtensionContextError
+    public class EntityCreationError
     extends Error
     {
-        public function NullExtensionContextError()
+        public function EntityCreationError()
         {
-            super("Extension context is null. This may be because dispose() was called (which renders this instance of the class unusable), or the class did not initialise correctly on construction.");
+            super("Could not create entity. Listen for Box2DExtensionErrorEvents and see if there's anything relevant there.");
         }
     }
 }

@@ -102,6 +102,8 @@ public:
     
     static float32 read_x(FREObject source);
     static float32 read_y(FREObject source);
+    
+    static void write(const b2Vec2 *source, FREObject target);
 };
 
 class ANE_b2FixtureDef : public b2FixtureDef

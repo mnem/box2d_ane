@@ -28,19 +28,19 @@
  */
 package noiseandheat.ane.box2d.events
 {
-	import flash.events.Event;
+    import flash.events.Event;
 
-	public class Box2DExtensionErrorEvent
-	extends Event
-	{
-		public static const INTERNAL_ERROR:String = "Box2DExtensionErrorEvent::INTERNAL_ERROR";
-		protected var _message:String;
+    public class Box2DExtensionErrorEvent
+    extends Event
+    {
+        public static const INTERNAL_ERROR:String = "Box2DExtensionErrorEvent::INTERNAL_ERROR";
+        protected var _message:String;
 
-		public function Box2DExtensionErrorEvent(type:String, message:String = "Not really sure what happened.")
-		{
-			super(type);
-			_message = message;
-		}
+        public function Box2DExtensionErrorEvent(type:String, message:String = "Not really sure what happened.")
+        {
+            super(type);
+            _message = message;
+        }
 
         override public function clone():Event
         {
@@ -52,9 +52,9 @@ package noiseandheat.ane.box2d.events
             return formatToString("Box2DExtensionErrorEvent", "type", "message");
         }
 
-		public function get message():String
-		{
-			return _message;
-		}
-	}
+        public function get message():String
+        {
+            return _message;
+        }
+    }
 }

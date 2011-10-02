@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.powerflasher.fdt.ui.MxmlcGroup">
+<stringAttribute key="ADL_ARGUMENTS" value=""/>
+<stringAttribute key="ADL_DESCRIPTOR_FILE" value=""/>
+<stringAttribute key="ADL_SCREENSIZE" value="480x816:480x854"/>
+<intAttribute key="AIR_VIEWER_CONF" value="1"/>
+<stringAttribute key="APP_ARGUMENTS" value=""/>
+<stringAttribute key="ARGUMENTS" value=""/>
+<booleanAttribute key="KILL_PREVIOUS_VIEWER" value="true"/>
+<stringAttribute key="LAUNCHER_DEPENDENCIES" value="[Self]"/>
+<stringAttribute key="MAIN_CLASS" value="src/noiseandheat/test/box2dane/Box2DANEApp.as"/>
+<stringAttribute key="MOBILE_PRESET" value="Droid"/>
+<stringAttribute key="OUTPUT" value="build/desktop/Box2DANEApp.swf"/>
+<booleanAttribute key="PASS_CP" value="true"/>
+<booleanAttribute key="PASS_EXTERNS" value="true"/>
+<booleanAttribute key="PASS_MAIN_CLASS" value="true"/>
+<booleanAttribute key="PASS_RSLS" value="false"/>
+<booleanAttribute key="PASS_SWCS" value="true"/>
+<intAttribute key="PLAYER_HEIGHT" value="480"/>
+<intAttribute key="PLAYER_WIDTH" value="320"/>
+<stringAttribute key="POST_COMPILE_ANT" value=""/>
+<stringAttribute key="PRE_COMPILE_ANT" value=""/>
+<stringAttribute key="PROJECT_NAME" value="fdt"/>
+<stringAttribute key="PUBLISHER_ID" value=""/>
+<booleanAttribute key="START_SWF_ENABLED" value="true"/>
+<stringAttribute key="START_SWF_LOCATION" value="build/desktop/Box2DANEApp.swf"/>
+<stringAttribute key="START_SWF_WITH" value="AIR Debug Launcher"/>
+<booleanAttribute key="USE_PROJECT_COMPILER_ARGUMENTS" value="true"/>
+<booleanAttribute key="USE_SWF_SELECTED" value="true"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/fdt"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="4"/>
+</listAttribute>
+</launchConfiguration>

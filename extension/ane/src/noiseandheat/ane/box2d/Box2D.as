@@ -33,12 +33,16 @@ package noiseandheat.ane.box2d
 	import flash.events.EventDispatcher;
 
 	import noiseandheat.ane.box2d.errors.NullExtensionContextError;
+	import noiseandheat.ane.box2d.errors.EntityCreationError;
 	import noiseandheat.ane.box2d.events.Box2DExtensionErrorEvent;
+    import noiseandheat.ane.box2d.data.Version;
 
 	public final class Box2D
 	extends EventDispatcher
 	implements Box2DAPI
 	{
+		private static const INVALID_ENTITY_ID:uint = 0;
+
 		private var context:ExtensionContext;
 
 		public function Box2D()
@@ -47,6 +51,8 @@ package noiseandheat.ane.box2d
 			if(context != null)
 			{
 				context.addEventListener(StatusEvent.STATUS, onStatus);
+
+				context.actionScriptData = new Box2DActionScriptData();
 			}
 		}
 
@@ -66,7 +72,6 @@ package noiseandheat.ane.box2d
 			if(context != null)
 			{
 				context.dispose();
-				context = null;
 			}
 		}
 
@@ -85,11 +90,11 @@ package noiseandheat.ane.box2d
 		 * is represented in the object by int properties named "major",
 		 * "minor" and "revision".
 		 */
-        public function getBox2DVersion():Object
+        public function getBox2DVersion():Version
         {
 			if(context == null) throw new NullExtensionContextError();
 
-			return context.call("getBox2DVersion") as Object;
+			return Version.create(context.call("getBox2DVersion") as Object);
         }
 
 		/**
@@ -127,11 +132,13 @@ package noiseandheat.ane.box2d
 		 *    linearVelocity:Object {x:Number, y:Number}
 		 *    position:Object {x:Number, y:Number}
 		 */
-        public function createBody(b2BodyDef:Object):uint
+        public function createBody(b2BodyDef:Object = null):uint
         {
 			if(context == null) throw new NullExtensionContextError();
 
-			return context.call("createBody", b2BodyDef) as uint;
+			var id:uint = context.call("createBody", b2BodyDef) as uint;
+			if(id == INVALID_ENTITY_ID) throw new EntityCreationError();
+			return id;
         }
 
 		/**
@@ -152,7 +159,9 @@ package noiseandheat.ane.box2d
         {
 			if(context == null) throw new NullExtensionContextError();
 
-			return context.call("createBodyFixtureWithBoxShape", bodyID, width, height, b2FixtureDef) as uint;
+			var id:uint = context.call("createBodyFixtureWithBoxShape", bodyID, width, height, b2FixtureDef) as uint;
+			if(id == INVALID_ENTITY_ID) throw new EntityCreationError();
+			return id;
         }
 
 		/**
@@ -163,12 +172,41 @@ package noiseandheat.ane.box2d
 		 * @param timeStep - time step to simulate. Don't vary this.
 		 * @param velocityIterations - Number of iterations the velocity constraint solver goes through.
 		 * @param positionIterations - Number of iterations the position constraint solver goes through.
+		 * @param updateBodiesVector - updates the bodies vector after this step. Generally, leave this
+		 *                             as true unless you want to call worldStep many times without
+		 *							   updating the visual representation of the world. Remember to
+		 *							   manually call updateBodiesVector if you set this to false.
 		 */
-        public function worldStep(timeStep:Number = 1/60, velocityIterations:int = 8, positionIterations:int = 3):void
+        public function worldStep(timeStep:Number = 1/60, velocityIterations:int = 8, positionIterations:int = 3, alsoUpdateBodiesVector:Boolean = true):void
         {
 			if(context == null) throw new NullExtensionContextError();
 
 			context.call("worldStep", timeStep, velocityIterations, positionIterations);
+
+			if(alsoUpdateBodiesVector) updateBodiesVector();
+        }
+
+		/**
+		 * Returns a vector of information about all the bodies in the world.
+		 * Each object contains:
+ 		 *    id:uint
+		 *    position:Object {x:Number, y:Number}
+ 		 *    angle:Number
+		 */
+        public function get bodies():Vector.<Object>
+//        public function get bodies():Object
+        {
+        	return Box2DActionScriptData(context.actionScriptData).bodies;
+        }
+
+		/**
+		 * Updates the bodies vector so that it is an accurate representation
+		 * of what is in the world. This is automatically called after
+		 * worldStep if updateBodiesVector is true;
+		 */
+        public function updateBodiesVector():void
+        {
+			context.call("updateBodiesVector");
         }
 	}
 }

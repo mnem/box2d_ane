@@ -26,14 +26,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package noiseandheat.ane.box2d.errors
+package noiseandheat.ane.box2d
 {
-    public class NullExtensionContextError
-    extends Error
+    /**
+     * Public API for the Box2D native class.
+     *
+     * At the moment, the extension only allows 1 world to be simulated so
+     * there are no functions to explicitly create a world. It is implicitly
+     * created when you create a new class which implements Box2DAPI.
+     *
+     * See: noiseandheat.ane.box2d.Box2D
+     */
+    public final class Box2DActionScriptData
     {
-        public function NullExtensionContextError()
+        public var bodies:Vector.<Object>;
+//        public var bodies:Object;
+
+        public function Box2DActionScriptData()
         {
-            super("Extension context is null. This may be because dispose() was called (which renders this instance of the class unusable), or the class did not initialise correctly on construction.");
+            bodies = new Vector.<Object>();
+            //bodies = {};
         }
     }
 }

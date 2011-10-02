@@ -34,22 +34,86 @@
 #include "Box2D/Box2D.h"
 #include "Box2DExtensionHelper.h"
 
-class SessionContext
+
+class ANE_Container
 {
 public:
-    b2World world;
-
-	SessionContext(float32 gX = 0.0, float32 gY = -10.0, bool allowSleeping = true);
+    ANE_Container(uint32_t ID) : itemID(ID) {};
     
-    uintptr_t ClaimNextFreeID() 
+    virtual void Serialize(FREContext context, FREObject store) = 0;
+    
+public:
+    const uint32_t itemID;
+};
+
+class ANE_b2BodyContainer : public ANE_Container
+{
+public:
+    ANE_b2BodyContainer(b2Body* body, uint32_t bodyID) : ANE_Container(bodyID), body(body)
+    {
+        body->SetUserData((void*)this);
+    }
+    
+    void Serialize(FREContext context, FREObject store);
+    
+public:
+    const b2Body* body;
+};
+
+class ANE_b2FixtureContainer : public ANE_Container
+{
+public:
+    ANE_b2FixtureContainer(b2Fixture* fixture, uint32_t fixtureID) : ANE_Container(fixtureID), fixture(fixture)
+    {
+        fixture->SetUserData((void*)this);
+    }
+    
+    void Serialize(FREContext context, FREObject store)
+    {
+        FREObject AS_itemID;
+        FRENewObjectFromUint32(itemID, &AS_itemID);
+        FRESetObjectProperty(store, (const uint8_t *)"id", AS_itemID, NULL);
+    }
+    
+public:
+    const b2Fixture* fixture;
+};
+
+
+class SessionContext
+{
+private:
+    uint32_t ClaimNextFreeID() 
     {
         return nextFreeID++;
     };
     
-    b2Body* FindBody(uintptr_t bodyID);
+    uint32_t nextFreeID;
 
-private:
-    uintptr_t nextFreeID;
+public:
+    static const uint32_t INVALID_ENTITY_ID;
+    b2World world;
+
+	SessionContext(float32 gX = 0.0, float32 gY = -10.0, bool allowSleeping = true);
+    
+    uint32_t RegisterBody(b2Body* body)
+    {
+        uint32_t bodyID = ClaimNextFreeID();
+        new ANE_b2BodyContainer(body, bodyID);
+        return bodyID;
+    }
+    
+    uint32_t RegisterFixture(b2Fixture* fixture)
+    {
+        uint32_t fixtureID = ClaimNextFreeID();
+        new ANE_b2FixtureContainer(fixture, fixtureID);
+        return fixtureID;
+    }
+    
+    
+    b2Body* FindBody(uint32_t bodyID);
+    
+    void WriteBodyListToActionScriptData(FREContext context);
 };
 
 #endif /* #ifndef NaHBox2D_SessionContext_h */

@@ -32,7 +32,7 @@ end
 
 desc 'Compiles the app'
 task :compile => :ensure_build_directory do
-	%x{mxmlc +configname=air -output build/Box2DANEApp.swf src/noiseandheat/test/box2dane/Box2DANEApp.mxml -load-config+=build.config}
+	%x{mxmlc +configname=air -output build/Box2DANEApp.swf src/noiseandheat/test/box2dane/Box2DANEApp.as -load-config+=build.config}
 end
 
 ############################################################################

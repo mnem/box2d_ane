@@ -249,7 +249,7 @@ void ANE_b2BodyDef::set_linearVelocity(FREObject o)
 
 void ANE_b2BodyDef::set_position(FREObject o)
 {
-    linearVelocity.Set(ANE_b2Vec2::read_x(o), ANE_b2Vec2::read_y(o));
+    position.Set(ANE_b2Vec2::read_x(o), ANE_b2Vec2::read_y(o));
 }
 
 /***************************************************************************
@@ -294,8 +294,32 @@ float32 ANE_b2Vec2::read_x(FREObject o)
 
 float32 ANE_b2Vec2::read_y(FREObject o)
 {
-    return GetPropertyAsDouble(o, AS_PROP_x);
+    return GetPropertyAsDouble(o, AS_PROP_y);
 }
+
+void ANE_b2Vec2::write(const b2Vec2 *source, FREObject target)
+{
+    if (target == NULL) return;
+    
+    double x = 0.0;
+    double y = 0.0;
+    
+    if (source != NULL)
+    {
+        x = source->x;
+        y = source->y;
+    }
+    
+    FREObject as_x;
+    FREObject as_y;
+    
+    FRENewObjectFromDouble(x, &as_x);
+    FRENewObjectFromDouble(y, &as_y);
+    
+    FRESetObjectProperty(target, AS_PROP_x, as_x, NULL);
+    FRESetObjectProperty(target, AS_PROP_y, as_y, NULL);
+}
+
 
 /***************************************************************************
  * ANE_b2FixtureDef

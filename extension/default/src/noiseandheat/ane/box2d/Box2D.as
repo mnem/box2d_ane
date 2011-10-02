@@ -28,34 +28,96 @@
  */
 package noiseandheat.ane.box2d
 {
-	import flash.external.ExtensionContext;
+    import noiseandheat.ane.box2d.data.Version;
+    import noiseandheat.ane.box2d.errors.NullExtensionContextError;
 
-	public final class Box2D
-	implements Box2DAPI
-	{
-		private var disposed:Boolean;
+    import flash.events.EventDispatcher;
 
-		public function Box2D()
-		{
-			trace("Constructing an ActionScript Box2D object");
-			disposed = false;
-		}
+    public final class Box2D
+    extends EventDispatcher
+    implements Box2DAPI
+    {
+        private var context:Box2DActionScriptData;
+        private var storedBodies:Vector.<Object>;
+        private var nextFreeID:uint = 0;
 
-		public function dispose():void
-		{
-			disposed = true;
-		}
+        public function Box2D()
+        {
+            trace("Constructing an ActionScript Box2D object");
+            context = new Box2DActionScriptData();
+            storedBodies = new Vector.<Object>();
+        }
 
-		public function hello():String
-		{
-			if(disposed) throw new Error("Cannot use extension after dispose() has been called");
-			return "Why, hello there. I'm your ActionScript non-native. How do you do?";
-		}
+        public function dispose():void
+        {
+            context = null;
+        }
 
-		public function hello2():String
-		{
-			if(disposed) throw new Error("Cannot use extension after dispose() has been called");
-			return "Non native hello 2";
-		}
-	}
+        private function claimNextFreeID():uint
+        {
+            return nextFreeID++;
+        }
+
+        public function getNativeBuildStamp():String
+        {
+            if (context == null) throw new NullExtensionContextError();
+            return "Noise & Heat Box2D Air Native Extension pure ActionScript implementation. For more information, see http://noiseandheat.com/";
+        }
+
+        public function getBox2DVersion():Version
+        {
+            if (context == null) throw new NullExtensionContextError();
+            return Version.create({major:0, minor:0, revision:0});
+        }
+
+        public function setWorldGravity(b2Vec2:Object):void
+        {
+            if (context == null) throw new NullExtensionContextError();
+        }
+
+        public function createBody(b2BodyDef:Object = null):uint
+        {
+            if (context == null) throw new NullExtensionContextError();
+            var o:Object = {id:claimNextFreeID(), angle:0.0, position:{x:0.0, y:0.0}};
+
+            storedBodies.push(o);
+
+            return o['id'];
+        }
+
+        public function createBodyFixtureWithBoxShape(bodyID:uint, width:Number, height:Number, b2FixtureDef:Object = null):uint
+        {
+            if (context == null) throw new NullExtensionContextError();
+            return claimNextFreeID();
+        }
+
+        public function get bodies():Vector.<Object>
+//        public function get bodies():Object//Vector.<Object>
+        {
+            if (context == null) throw new NullExtensionContextError();
+            return context.bodies;
+        }
+
+        public function worldStep(timeStep:Number = 1 / 60, velocityIterations:int = 8, positionIterations:int = 3, updateBodiesVector:Boolean = true):void
+        {
+        }
+
+        public function updateBodiesVector():void
+        {
+            context.bodies.length = 0;
+            for(var i:int = 0; i < storedBodies.length; i++)
+            {
+                context.bodies.push(storedBodies[i]);
+            }
+        }
+//        public function updateBodiesVector():void
+//        {
+//            context.bodies = {};//.length = 0;
+//            for(var i:int = 0; i < storedBodies.length; i++)
+//            {
+//
+//                context.bodies[storedBodies[i]['id']] = storedBodies[i];//.push(storedBodies[i]);
+//            }
+//        }
+    }
 }

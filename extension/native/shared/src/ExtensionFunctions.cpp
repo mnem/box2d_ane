@@ -29,7 +29,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <limits>
 
 #include "ExtensionFunctions.h"
 #include "SessionContext.h"
@@ -122,21 +121,16 @@ DEFINE_ANE_FUNCTION(createBody)
     ASSERT_ARGC_IS(createBody, 1);
     
     FREObject returnValue = NULL;
+    FRENewObjectFromUint32(SessionContext::INVALID_ENTITY_ID, &returnValue);
     
     GET_SESSION_CONTEXT(sc);
 
-    uintptr_t id = sc->ClaimNextFreeID();
-    if (id > std::numeric_limits<uint32_t>::max()) 
-    {
-        DISPATCH_INTERNAL_ERROR(context, "createBody: Entity ID overflow. Can't create any more entities.");
-        return returnValue;
-    }
-
     ANE_b2BodyDef bodyDef(argv[0]);
-    b2Body* body = sc->world.CreateBody(&bodyDef);
     
-    body->SetUserData((void*)id);
-    FRENewObjectFromUint32((uint32_t)id, &returnValue);
+    b2Body* body = sc->world.CreateBody(&bodyDef);
+    uint32_t bodyID = sc->RegisterBody(body);
+    
+    FRENewObjectFromUint32(bodyID, &returnValue);
     
     return returnValue;
 }
@@ -147,26 +141,27 @@ DEFINE_ANE_FUNCTION(createBodyFixtureWithBoxShape)
     ASSERT_ARGC_AT_LEAST(createBodyFixtureWithBoxShape, 3);
     
     FREObject returnValue = NULL;
+    FRENewObjectFromUint32(SessionContext::INVALID_ENTITY_ID, &returnValue);
 
     uint32_t bodyID;
     if (FREGetObjectAsUint32(argv[0], &bodyID) != FRE_OK)
     {
         DISPATCH_INTERNAL_ERROR(context, "createBodyFixtureWithBoxShape: bodyID was not numeric.");
-        return NULL;
+        return returnValue;
     }
     
     double width;
     if (FREGetObjectAsDouble(argv[1], &width) != FRE_OK)
     {
         DISPATCH_INTERNAL_ERROR(context, "createBodyFixtureWithBoxShape: width was not numeric.");
-        return NULL;
+        return returnValue;
     }
     
     double height;
     if (FREGetObjectAsDouble(argv[2], &height) != FRE_OK)
     {
         DISPATCH_INTERNAL_ERROR(context, "createBodyFixtureWithBoxShape: height was not numeric.");
-        return NULL;
+        return returnValue;
     }
     
     GET_SESSION_CONTEXT(sc);
@@ -175,13 +170,6 @@ DEFINE_ANE_FUNCTION(createBodyFixtureWithBoxShape)
     if (body == NULL)
     {
         DISPATCH_INTERNAL_ERROR(context, "createBodyFixtureWithBoxShape: No body matched the specified bodyID.");
-        return NULL;
-    }
-
-    uintptr_t id = sc->ClaimNextFreeID();
-    if (id > std::numeric_limits<uint32_t>::max()) 
-    {
-        DISPATCH_INTERNAL_ERROR(context, "createBodyFixtureWithBoxShape: Entity ID overflow. Can't create any more entities.");
         return returnValue;
     }
     
@@ -204,8 +192,8 @@ DEFINE_ANE_FUNCTION(createBodyFixtureWithBoxShape)
     
     if (fixture != NULL)
     {
-        fixture->SetUserData((void*)id);
-        FRENewObjectFromUint32((uint32_t)id, &returnValue);
+        uint32_t fixtureID = sc->RegisterFixture(fixture);
+        FRENewObjectFromUint32(fixtureID, &returnValue);
     }
     
     return returnValue;
@@ -244,6 +232,16 @@ DEFINE_ANE_FUNCTION(worldStep)
     return returnValue;
 }
 
+DEFINE_ANE_FUNCTION(updateBodiesVector)
+{
+    FREObject returnValue = NULL;
+    GET_SESSION_CONTEXT(sc);
+    
+    sc->WriteBodyListToActionScriptData(context);
+    
+    return returnValue;
+}
+
 /***************************************************************************
  * Function map to add to the extension context
  *
@@ -269,6 +267,7 @@ extern "C" uint32_t NAHB2D_createNamedFunctionsArray(const FRENamedFunction** fu
         MAP_FUNCTION(createBody, NULL),
         MAP_FUNCTION(createBodyFixtureWithBoxShape, NULL),
         MAP_FUNCTION(worldStep, NULL),
+        MAP_FUNCTION(updateBodiesVector, NULL),
     };
     
     // Set the map pointer

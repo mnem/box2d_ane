@@ -26,14 +26,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package noiseandheat.ane.box2d.errors
+package noiseandheat.ane.box2d.data
 {
-    public class NullExtensionContextError
-    extends Error
+    public class Version
     {
-        public function NullExtensionContextError()
+        public var major:int;
+        public var minor:int;
+        public var revision:int;
+
+        public static function create(source:Object):Version
         {
-            super("Extension context is null. This may be because dispose() was called (which renders this instance of the class unusable), or the class did not initialise correctly on construction.");
+            var v:Version = new Version();
+
+            v.major = source['major'] || 0;
+            v.minor = source['minor'] || 0;
+            v.revision = source['revision'] || 0;
+
+            return v;
+        }
+
+        public function toString():String
+        {
+            return major + "," + minor + "," + revision;
         }
     }
 }
