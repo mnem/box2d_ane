@@ -92,5 +92,5 @@ task :package_android => [:ensure_android_package_directory, :compile] do
 	%x{adt -package -target apk #{android_package_signing} #{output_name} #{input_files} -extdir ../extension/build}
 end
 
-#task :default => [ :quick_package_ios, :package_android ]
-task :default => [ :package_android ]
+task :default => [ :quick_package_ios, :package_android ]
+#task :default => [ :package_android ]

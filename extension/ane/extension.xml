@@ -5,7 +5,6 @@
   <description>Box2D physics library implemented as an Air Native Extension.</description>
   <copyright>Copyright 2011, Noise and Heat</copyright>
   <platforms>
-<!--
     <platform name="iPhone-ARM">
       <applicationDeployment>
         <nativeLibrary>libNaHBox2D.a</nativeLibrary>
@@ -13,7 +12,6 @@
         <finalizer>NAHB2DExtensionFinalizer</finalizer>
       </applicationDeployment>
     </platform>
--->
 
     <platform name="Android-ARM">
       <applicationDeployment>
