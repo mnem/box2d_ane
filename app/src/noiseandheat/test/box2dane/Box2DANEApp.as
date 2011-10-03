@@ -28,6 +28,7 @@
  */
 package noiseandheat.test.box2dane
 {
+    import flash.utils.getTimer;
     import noiseandheat.ane.box2d.Box2D;
     import noiseandheat.ane.box2d.Box2DAPI;
     import noiseandheat.ane.box2d.data.b2BodyProxy;
@@ -47,22 +48,33 @@ package noiseandheat.test.box2dane
     public final class Box2DANEApp
     extends Sprite
     {
-        private static const TEXT_OUT:Boolean = false;
+        private static const TEXT_OUT:Boolean = true;
 
         private static const PIXELS_PER_M:int = 42;
 //        private static const PIXELS_PER_M:int = 10;
 
         private var output:TextField;
         private var b2d:Box2DAPI;
-        private var groundBody:b2BodyProxy;
-        private var groundFixtureID:uint;
-        private var dynamicBody:b2BodyProxy;
-        private var dynamicFixtureID:uint;
+//        private var groundBody:b2BodyProxy;
+//        private var groundFixtureID:uint;
+//        private var dynamicBody:b2BodyProxy;
+//        private var dynamicFixtureID:uint;
 
         private var canvas:Sprite;
 
+        private static const SAMPLE_SIZE:int = 100;
+        private var physicsTimings:Vector.<int> = new Vector.<int>(SAMPLE_SIZE, true);
+        private var renderTimings:Vector.<int> = new Vector.<int>(SAMPLE_SIZE, true);
+        private var currentSample:uint = 0;
+
         public function Box2DANEApp()
         {
+            for(var i:int; i < SAMPLE_SIZE; i++)
+            {
+                physicsTimings[i] = -1;
+                renderTimings[i] = -1;
+            }
+
             stage.scaleMode = StageScaleMode.NO_SCALE;
             stage.align = StageAlign.TOP_LEFT;
             stage.quality = StageQuality.LOW;
@@ -101,9 +113,42 @@ package noiseandheat.test.box2dane
 
         private function handleEnterFrame(event:Event):void
         {
-            canvas.graphics.clear();
+            var physicsTime:int = getTimer();
+            b2d.worldStep(1 / 60, 6, 2, false);
+            physicsTimings[currentSample] = getTimer() - physicsTime;
 
-            b2d.worldStep(1 / 60, 6, 2);
+            var renderTime:int = getTimer();
+            canvas.graphics.clear();
+            b2d.updateBodyStore();
+            renderTimings[currentSample] = getTimer() - renderTime;
+
+            currentSample++;
+            if(currentSample >= SAMPLE_SIZE) currentSample = 0;
+
+            var physicsAverage:Number = 0;
+            var renderAverage:Number = 0;
+            var validSamples:int = 0;
+
+            for(var i:int; i < SAMPLE_SIZE; i++)
+            {
+                var p:int = physicsTimings[i];
+                var r:int = renderTimings[i];
+                if(p > 0 && r > 0)
+                {
+                    physicsAverage += p;
+                    renderAverage += r;
+                    validSamples++;
+                }
+            }
+
+            if(validSamples > 0)
+            {
+                physicsAverage /= validSamples;
+                renderAverage /= validSamples;
+
+                log("physics ms: " + physicsAverage.toFixed(2), true);
+                log("render ms: " + renderAverage.toFixed(2));
+            }
         }
 
         private function doSomeStuff():void
@@ -115,14 +160,29 @@ package noiseandheat.test.box2dane
             b2d.setWorldGravity({x:0, y:-10});
 
             log("Creating ground");
-            groundBody = b2d.createBody({position:{x:0.0, y:0.0}});
+            var groundBody:b2BodyProxy = b2d.createBody({position:{x:0.0, y:0.0}});
             groundBody.updateCallback = groundUpdated;
-            groundFixtureID = b2d.createBodyFixtureWithBoxShape(groundBody.id, 5.0, 0.5);
+            b2d.createBodyFixtureWithBoxShape(groundBody.id, 10.0, 0.5);
 
             log("Creating dynamic");
-            dynamicBody = b2d.createBody({type:2, position:{x:0.0, y:9}});
-            dynamicBody.updateCallback = bodyUpdated;
-            dynamicFixtureID = b2d.createBodyFixtureWithBoxShape(dynamicBody.id, 0.5, 0.5, {density:1.0, friction:0.3});
+            var i:int;
+            var j:int;
+            var iMax:int = 10;
+            var jMax:int = 5;
+            var cubeEdge:Number = 0.5;
+            var currentX:Number = -cubeEdge * jMax / 2;
+            var dynamicBody:b2BodyProxy;
+            for(j = 0; j < jMax; j++)
+            {
+                for(i = 0; i < iMax; i++)
+                {
+                    dynamicBody = b2d.createBody({type:2, position:{x:currentX, y:9 + (cubeEdge*i)}});
+                    dynamicBody.updateCallback = bodyUpdated;
+                    b2d.createBodyFixtureWithBoxShape(dynamicBody.id, cubeEdge/2, cubeEdge/2, {restitution:0.5, density:1.0, friction:0.3});
+                }
+
+                currentX += cubeEdge;
+            }
         }
 
         private function drawCenteredBox(position:b2VecProxy, width:Number, height:Number, colour:uint):void
@@ -141,33 +201,15 @@ package noiseandheat.test.box2dane
         private function bodyUpdated(body:b2BodyProxy):void
         {
             //log("Updated: " + body);
-            drawCenteredBox(body.position, 1, 1, 0xA51B26);
+            drawCenteredBox(body.position, 0.5, 0.5, 0xA51B26);
         }
 
 
         private function groundUpdated(body:b2BodyProxy):void
         {
             //log("Updated: " + body);
-            drawCenteredBox(body.position, 10, 1, 0x929292);
+            drawCenteredBox(body.position, 20, 1, 0x929292);
          }
-
-        private function logBodies():void
-        {
-            var line:String = "";
-
-            for each (var body:b2BodyProxy in b2d.bodies)
-            {
-                line += "\n" + body.toString();
-            }
-//                for (var i:int = 0; i < b2d.bodies.length; i++)
-//                {
-//                    var body:Object = b2d.bodies[i];
-//                    if (body != null)
-//                        line += "\n" + i + "- id:" + body["id"] + ", angle:" + body["angle"] + ", position:(" + body["position"]['x'] + ", " + body["position"]['y'] + ")";
-//                }
-
-            log("Bodies: " + line);
-        }
 
         private function initBox2DAPI():void
         {
@@ -191,9 +233,13 @@ package noiseandheat.test.box2dane
             canvas.y = stage.stageHeight;
         }
 
-        private function log(message:String):void
+        private function log(message:String, clear:Boolean = false):void
         {
-            if(TEXT_OUT) output.appendText(message + "\n");
+            if(TEXT_OUT)
+            {
+                if(clear) output.text = "";
+                output.appendText(message + "\n");
+            }
         }
     }
 }
