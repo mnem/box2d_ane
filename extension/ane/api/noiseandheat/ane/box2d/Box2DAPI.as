@@ -29,8 +29,10 @@
 package noiseandheat.ane.box2d
 {
     import noiseandheat.ane.box2d.data.Version;
+    import noiseandheat.ane.box2d.data.b2BodyProxy;
 
     import flash.events.IEventDispatcher;
+    import flash.utils.Dictionary;
 
     /**
      * Public API for the Box2D native class.
@@ -94,7 +96,7 @@ package noiseandheat.ane.box2d
          *    linearVelocity:Object {x:Number, y:Number}
          *    position:Object {x:Number, y:Number}
          */
-        function createBody(b2BodyDef:Object = null):uint;
+        function createBody(b2BodyDef:Object = null):b2BodyProxy;
 
         /**
          * Creates a new fixture on a body in the world from the supplied
@@ -133,14 +135,13 @@ package noiseandheat.ane.box2d
          *    position:Object {x:Number, y:Number}
          *    angle:Number
          */
-        function get bodies():Vector.<Object>;
-//        function get bodies():Object;//Vector.<Object>;
+        function get bodies():Dictionary;
 
         /**
          * Updates the bodies vector so that it is an accurate representation
          * of what is in the world. This is automatically called after
          * worldStep if updateBodiesVector is true;
          */
-        function updateBodiesVector():void;
+        function updateBodyStore():void;
     }
 }

@@ -28,6 +28,9 @@
  */
 package noiseandheat.ane.box2d
 {
+    import noiseandheat.ane.box2d.data.b2BodyProxy;
+
+    import flash.utils.Dictionary;
     /**
      * Public API for the Box2D native class.
      *
@@ -39,13 +42,21 @@ package noiseandheat.ane.box2d
      */
     public final class Box2DActionScriptData
     {
-        public var bodies:Vector.<Object>;
-//        public var bodies:Object;
+        private var _bodies:Dictionary = new Dictionary();
 
-        public function Box2DActionScriptData()
+        public function getBody(bodyID:uint, createIfNeeded:Boolean = false):b2BodyProxy
         {
-            bodies = new Vector.<Object>();
-            //bodies = {};
+            if(_bodies[bodyID] == null && createIfNeeded)
+            {
+                _bodies[bodyID] = new b2BodyProxy();
+            }
+
+            return _bodies[bodyID];
+        }
+
+        public function get bodies():Dictionary
+        {
+            return _bodies;
         }
     }
 }

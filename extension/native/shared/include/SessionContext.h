@@ -80,7 +80,7 @@ public:
 };
 
 
-class SessionContext
+class SessionContext : public b2DestructionListener
 {
 private:
     uint32_t ClaimNextFreeID() 
@@ -96,11 +96,10 @@ public:
 
 	SessionContext(float32 gX = 0.0, float32 gY = -10.0, bool allowSleeping = true);
     
-    uint32_t RegisterBody(b2Body* body)
+    ANE_b2BodyContainer* RegisterBody(b2Body* body)
     {
         uint32_t bodyID = ClaimNextFreeID();
-        new ANE_b2BodyContainer(body, bodyID);
-        return bodyID;
+        return new ANE_b2BodyContainer(body, bodyID);
     }
     
     uint32_t RegisterFixture(b2Fixture* fixture)
@@ -114,6 +113,25 @@ public:
     b2Body* FindBody(uint32_t bodyID);
     
     void WriteBodyListToActionScriptData(FREContext context);
+
+    void GetBodyProxyFromASData(FREObject asd, uint32_t bodyID, FREObject *proxy);
+    void GetBodyProxyFromContext(FREContext context, uint32_t bodyID, FREObject *proxy);
+
+	
+    // Destruction listeners
+    void SayGoodbye(b2Joint* joint)
+    {
+        // Nothing yet
+    }
+    
+	void SayGoodbye(b2Fixture* fixture)
+    {
+        ANE_b2FixtureContainer* fixtureContainer = (ANE_b2FixtureContainer*)(fixture->GetUserData());
+        
+        // Notify the world somehow? Might have to stick it on a stack
+        
+        delete fixtureContainer;
+    }
 };
 
 #endif /* #ifndef NaHBox2D_SessionContext_h */

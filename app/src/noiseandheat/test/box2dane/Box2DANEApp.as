@@ -28,44 +28,60 @@
  */
 package noiseandheat.test.box2dane
 {
-    import flash.text.TextFormat;
-
     import noiseandheat.ane.box2d.Box2D;
     import noiseandheat.ane.box2d.Box2DAPI;
+    import noiseandheat.ane.box2d.data.b2BodyProxy;
     import noiseandheat.ane.box2d.events.Box2DExtensionErrorEvent;
 
+    import flash.display.Graphics;
     import flash.display.Sprite;
     import flash.display.StageAlign;
+    import flash.display.StageQuality;
     import flash.display.StageScaleMode;
     import flash.events.Event;
     import flash.text.TextField;
+    import flash.text.TextFormat;
 
+    [SWF(backgroundColor="#FFFFFF", frameRate="61", width="480", height="320")]
     public final class Box2DANEApp
     extends Sprite
     {
+        private static const TEXT_OUT:Boolean = false;
+
+        private static const PIXELS_PER_M:int = 42;
+
         private var output:TextField;
         private var b2d:Box2DAPI;
-        private var groundID:uint;
+        private var groundBody:b2BodyProxy;
         private var groundFixtureID:uint;
-        private var dynamicID:uint;
+        private var dynamicBody:b2BodyProxy;
         private var dynamicFixtureID:uint;
+
+        private var canvas:Sprite;
 
         public function Box2DANEApp()
         {
             stage.scaleMode = StageScaleMode.NO_SCALE;
             stage.align = StageAlign.TOP_LEFT;
+            stage.quality = StageQuality.LOW;
 
-            output = new TextField();
-            output.width = stage.stageWidth;
-            output.height = stage.stageHeight;
-            output.wordWrap = true;
-            var tf:TextFormat = output.defaultTextFormat;
-            tf.font = "_sans";
-            tf.size = 16;
-            output.defaultTextFormat = tf;
-            addChild(output);
+            if(TEXT_OUT)
+            {
+                output = new TextField();
+                output.width = stage.stageWidth;
+                output.height = stage.stageHeight;
+                output.wordWrap = true;
+                var tf:TextFormat = output.defaultTextFormat;
+                tf.font = "_sans";
+                tf.size = 16;
+                output.defaultTextFormat = tf;
+                addChild(output);
+            }
 
-            stage.addEventListener(Event.RESIZE, handleResize);
+            canvas = new Sprite();
+            canvas.x = stage.stageWidth / 2;
+            canvas.y = stage.stageHeight;
+            addChild(canvas);
 
             try
             {
@@ -76,7 +92,16 @@ package noiseandheat.test.box2dane
             {
                 log("ERROR: " + e);
             }
-            log("Finished.");
+
+            stage.addEventListener(Event.RESIZE, handleResize);
+            stage.addEventListener(Event.ENTER_FRAME, handleEnterFrame);
+        }
+
+        private function handleEnterFrame(event:Event):void
+        {
+            canvas.graphics.clear();
+
+            b2d.worldStep(1 / 60, 6, 2);
         }
 
         private function doSomeStuff():void
@@ -87,54 +112,60 @@ package noiseandheat.test.box2dane
             log("Setting gravity to 0, -10");
             b2d.setWorldGravity({x:0, y:-10});
 
-            logBodies();
-
             log("Creating ground");
-            groundID = b2d.createBody({position:{x:0.0, y:-10.0}});
-            groundFixtureID = b2d.createBodyFixtureWithBoxShape(groundID, 50.0, 10.0);
-
-            b2d.updateBodiesVector();
-            logBodies();
+            groundBody = b2d.createBody({position:{x:0.0, y:0.0}});
+            groundBody.updateCallback = groundUpdated;
+            groundFixtureID = b2d.createBodyFixtureWithBoxShape(groundBody.id, 5.0, 1.0);
 
             log("Creating dynamic");
-            dynamicID = b2d.createBody({type:2, position:{x:0.0, y:4.0}});
-            dynamicFixtureID = b2d.createBodyFixtureWithBoxShape(dynamicID, 1.0, 1.0, {density:1.0, friction:0.3});
-            b2d.updateBodiesVector();
+            dynamicBody = b2d.createBody({type:2, position:{x:0.0, y:9}});
+            dynamicBody.updateCallback = bodyUpdated;
+            dynamicFixtureID = b2d.createBodyFixtureWithBoxShape(dynamicBody.id, 1.0, 1.0, {density:1.0, friction:0.3});
+        }
 
-            logBodies();
+        private function bodyUpdated(body:b2BodyProxy):void
+        {
+            //log("Updated: " + body);
 
-            log("Simulating...");
+            var x_px:Number = body.position.x * PIXELS_PER_M;
+            var y_px:Number = body.position.y * PIXELS_PER_M;
 
-            for (var i:int = 0; i < 60; ++i)
-            {
-                b2d.worldStep(1 / 60, 6, 2);
-                logBodies();
-            }
+            var g:Graphics = canvas.graphics;
+            g.beginFill(0xA51B26);
+            g.drawRect(x_px - (0.5 * PIXELS_PER_M), -(y_px - (0.5 * PIXELS_PER_M)), 1*PIXELS_PER_M, 1*PIXELS_PER_M);
+            g.endFill();
+        }
+
+
+        private function groundUpdated(body:b2BodyProxy):void
+        {
+            //log("Updated: " + body);
+            var g:Graphics = canvas.graphics;
+            g.beginFill(0x929292);
+
+            var x_px:Number = body.position.x * PIXELS_PER_M;
+            var y_px:Number = body.position.y * PIXELS_PER_M;
+
+            g.drawRect(x_px - (2.5 * PIXELS_PER_M), -(y_px - (0.5 * PIXELS_PER_M)), 5*PIXELS_PER_M, 1*PIXELS_PER_M);
+            g.endFill();
         }
 
         private function logBodies():void
         {
             var line:String = "";
 
-            if (b2d.bodies.length == 0)
+            for each (var body:b2BodyProxy in b2d.bodies)
             {
-                line = "NONE";
+                line += "\n" + body.toString();
             }
-            else
-            {
-                // for each (var body:Object in b2d.bodies)
-                // {
-                // line += "\n" + body["id"] + ", angle:" + body["angle"] + ", position:(" + body["position"]['x'] + ", " + body["position"]['y'] + ")";
-                // }
-                for (var i:int = 0; i < b2d.bodies.length; i++)
-                {
-                    var body:Object = b2d.bodies[i];
-                    if (body != null)
-                        line += "\n" + i + "- id:" + body["id"] + ", angle:" + body["angle"] + ", position:(" + body["position"]['x'] + ", " + body["position"]['y'] + ")";
-                }
-            }
+//                for (var i:int = 0; i < b2d.bodies.length; i++)
+//                {
+//                    var body:Object = b2d.bodies[i];
+//                    if (body != null)
+//                        line += "\n" + i + "- id:" + body["id"] + ", angle:" + body["angle"] + ", position:(" + body["position"]['x'] + ", " + body["position"]['y'] + ")";
+//                }
 
-            log("Bodies (" + b2d.bodies.length + "): " + line);
+            log("Bodies: " + line);
         }
 
         private function initBox2DAPI():void
@@ -150,13 +181,18 @@ package noiseandheat.test.box2dane
 
         private function handleResize(event:Event):void
         {
-            output.width = stage.stageWidth;
-            output.height = stage.stageHeight;
+            if(TEXT_OUT)
+            {
+                output.width = stage.stageWidth;
+                output.height = stage.stageHeight;
+            }
+            canvas.x = stage.stageWidth / 2;
+            canvas.y = stage.stageHeight;
         }
 
         private function log(message:String):void
         {
-            output.appendText(message + "\n");
+            if(TEXT_OUT) output.appendText(message + "\n");
         }
     }
 }

@@ -128,14 +128,14 @@ DEFINE_ANE_FUNCTION(createBody)
     ANE_b2BodyDef bodyDef(argv[0]);
     
     b2Body* body = sc->world.CreateBody(&bodyDef);
-    uint32_t bodyID = sc->RegisterBody(body);
+    ANE_b2BodyContainer *bodyContainer = sc->RegisterBody(body);
     
-    FRENewObjectFromUint32(bodyID, &returnValue);
+    sc->GetBodyProxyFromContext(context, bodyContainer->itemID, &returnValue);
+    bodyContainer->Serialize(context, returnValue);
     
     return returnValue;
 }
 
-// id, width, height, density
 DEFINE_ANE_FUNCTION(createBodyFixtureWithBoxShape)
 {
     ASSERT_ARGC_AT_LEAST(createBodyFixtureWithBoxShape, 3);
@@ -232,7 +232,7 @@ DEFINE_ANE_FUNCTION(worldStep)
     return returnValue;
 }
 
-DEFINE_ANE_FUNCTION(updateBodiesVector)
+DEFINE_ANE_FUNCTION(updateBodyStore)
 {
     FREObject returnValue = NULL;
     GET_SESSION_CONTEXT(sc);
@@ -267,7 +267,7 @@ extern "C" uint32_t NAHB2D_createNamedFunctionsArray(const FRENamedFunction** fu
         MAP_FUNCTION(createBody, NULL),
         MAP_FUNCTION(createBodyFixtureWithBoxShape, NULL),
         MAP_FUNCTION(worldStep, NULL),
-        MAP_FUNCTION(updateBodiesVector, NULL),
+        MAP_FUNCTION(updateBodyStore, NULL),
     };
     
     // Set the map pointer

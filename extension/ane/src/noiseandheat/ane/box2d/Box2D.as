@@ -31,11 +31,13 @@ package noiseandheat.ane.box2d
 	import flash.external.ExtensionContext;
 	import flash.events.StatusEvent;
 	import flash.events.EventDispatcher;
+    import flash.utils.Dictionary;
 
 	import noiseandheat.ane.box2d.errors.NullExtensionContextError;
 	import noiseandheat.ane.box2d.errors.EntityCreationError;
 	import noiseandheat.ane.box2d.events.Box2DExtensionErrorEvent;
     import noiseandheat.ane.box2d.data.Version;
+    import noiseandheat.ane.box2d.data.b2BodyProxy;
 
 	public final class Box2D
 	extends EventDispatcher
@@ -132,13 +134,11 @@ package noiseandheat.ane.box2d
 		 *    linearVelocity:Object {x:Number, y:Number}
 		 *    position:Object {x:Number, y:Number}
 		 */
-        public function createBody(b2BodyDef:Object = null):uint
+        public function createBody(b2BodyDef:Object = null):b2BodyProxy
         {
 			if(context == null) throw new NullExtensionContextError();
 
-			var id:uint = context.call("createBody", b2BodyDef) as uint;
-			if(id == INVALID_ENTITY_ID) throw new EntityCreationError();
-			return id;
+			return context.call("createBody", b2BodyDef) as b2BodyProxy;
         }
 
 		/**
@@ -172,18 +172,18 @@ package noiseandheat.ane.box2d
 		 * @param timeStep - time step to simulate. Don't vary this.
 		 * @param velocityIterations - Number of iterations the velocity constraint solver goes through.
 		 * @param positionIterations - Number of iterations the position constraint solver goes through.
-		 * @param updateBodiesVector - updates the bodies vector after this step. Generally, leave this
+		 * @param alsoUpdateBodies - updates the bodies vector after this step. Generally, leave this
 		 *                             as true unless you want to call worldStep many times without
 		 *							   updating the visual representation of the world. Remember to
 		 *							   manually call updateBodiesVector if you set this to false.
 		 */
-        public function worldStep(timeStep:Number = 1/60, velocityIterations:int = 8, positionIterations:int = 3, alsoUpdateBodiesVector:Boolean = true):void
+        public function worldStep(timeStep:Number = 1/60, velocityIterations:int = 8, positionIterations:int = 3, alsoUpdateBodies:Boolean = true):void
         {
 			if(context == null) throw new NullExtensionContextError();
 
 			context.call("worldStep", timeStep, velocityIterations, positionIterations);
 
-			if(alsoUpdateBodiesVector) updateBodiesVector();
+			if(alsoUpdateBodies) updateBodyStore();
         }
 
 		/**
@@ -193,8 +193,7 @@ package noiseandheat.ane.box2d
 		 *    position:Object {x:Number, y:Number}
  		 *    angle:Number
 		 */
-        public function get bodies():Vector.<Object>
-//        public function get bodies():Object
+        public function get bodies():Dictionary
         {
         	return Box2DActionScriptData(context.actionScriptData).bodies;
         }
@@ -204,9 +203,9 @@ package noiseandheat.ane.box2d
 		 * of what is in the world. This is automatically called after
 		 * worldStep if updateBodiesVector is true;
 		 */
-        public function updateBodiesVector():void
+        public function updateBodyStore():void
         {
-			context.call("updateBodiesVector");
+			context.call("updateBodyStore");
         }
 	}
 }

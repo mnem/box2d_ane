@@ -28,24 +28,23 @@
  */
 package noiseandheat.ane.box2d
 {
-    import noiseandheat.ane.box2d.data.Version;
-    import noiseandheat.ane.box2d.errors.NullExtensionContextError;
-
-    import flash.events.EventDispatcher;
+  import noiseandheat.ane.box2d.data.Version;
+  import noiseandheat.ane.box2d.data.b2BodyProxy;
+  import noiseandheat.ane.box2d.data.b2Vec;
+  import noiseandheat.ane.box2d.errors.NullExtensionContextError;
+  import flash.events.EventDispatcher;
+  import flash.utils.Dictionary;
 
     public final class Box2D
     extends EventDispatcher
     implements Box2DAPI
     {
         private var context:Box2DActionScriptData;
-        private var storedBodies:Vector.<Object>;
         private var nextFreeID:uint = 0;
 
         public function Box2D()
         {
-            trace("Constructing an ActionScript Box2D object");
             context = new Box2DActionScriptData();
-            storedBodies = new Vector.<Object>();
         }
 
         public function dispose():void
@@ -75,14 +74,25 @@ package noiseandheat.ane.box2d
             if (context == null) throw new NullExtensionContextError();
         }
 
-        public function createBody(b2BodyDef:Object = null):uint
+        public function createBody(b2BodyDef:Object = null):b2BodyProxy
         {
             if (context == null) throw new NullExtensionContextError();
-            var o:Object = {id:claimNextFreeID(), angle:0.0, position:{x:0.0, y:0.0}};
 
-            storedBodies.push(o);
+            var bodyID:uint = claimNextFreeID();
+            var body:b2BodyProxy = context.getBody(bodyID, true);
 
-            return o['id'];
+            body.id = bodyID;
+
+            if(b2BodyDef)
+            {
+                if(b2BodyDef["position"])
+                {
+                    body.position.x = b2BodyDef["position"]['x'];
+                    body.position.y = b2BodyDef["position"]['y'];
+                }
+            }
+
+            return body;
         }
 
         public function createBodyFixtureWithBoxShape(bodyID:uint, width:Number, height:Number, b2FixtureDef:Object = null):uint
@@ -91,8 +101,7 @@ package noiseandheat.ane.box2d
             return claimNextFreeID();
         }
 
-        public function get bodies():Vector.<Object>
-//        public function get bodies():Object//Vector.<Object>
+        public function get bodies():Dictionary
         {
             if (context == null) throw new NullExtensionContextError();
             return context.bodies;
@@ -100,24 +109,15 @@ package noiseandheat.ane.box2d
 
         public function worldStep(timeStep:Number = 1 / 60, velocityIterations:int = 8, positionIterations:int = 3, updateBodiesVector:Boolean = true):void
         {
+            if(updateBodiesVector) updateBodyStore();
         }
 
-        public function updateBodiesVector():void
+        public function updateBodyStore():void
         {
-            context.bodies.length = 0;
-            for(var i:int = 0; i < storedBodies.length; i++)
+            for each (var body:b2BodyProxy in context.bodies)
             {
-                context.bodies.push(storedBodies[i]);
+                body.notifyUpdated();
             }
         }
-//        public function updateBodiesVector():void
-//        {
-//            context.bodies = {};//.length = 0;
-//            for(var i:int = 0; i < storedBodies.length; i++)
-//            {
-//
-//                context.bodies[storedBodies[i]['id']] = storedBodies[i];//.push(storedBodies[i]);
-//            }
-//        }
     }
 }
