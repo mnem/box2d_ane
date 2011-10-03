@@ -7,7 +7,7 @@ package noiseandheat.ane.box2d.data
     {
         public var id:uint = 0;
         public var angle:Number = 0.0;
-        public var position:b2Vec = new b2Vec();
+        public var position:b2VecProxy = new b2VecProxy();
         private var _updateCallback:Function;
 
         public function notifyUpdated():void

@@ -28,12 +28,20 @@
  */
 package noiseandheat.ane.box2d
 {
-  import noiseandheat.ane.box2d.data.Version;
-  import noiseandheat.ane.box2d.data.b2BodyProxy;
-  import noiseandheat.ane.box2d.data.b2Vec;
-  import noiseandheat.ane.box2d.errors.NullExtensionContextError;
-  import flash.events.EventDispatcher;
-  import flash.utils.Dictionary;
+    import Box2D.Collision.Shapes.b2PolygonShape;
+    import Box2D.Common.Math.b2Vec2;
+    import Box2D.Dynamics.b2Body;
+    import Box2D.Dynamics.b2BodyDef;
+    import Box2D.Dynamics.b2Fixture;
+    import Box2D.Dynamics.b2FixtureDef;
+    import Box2D.Dynamics.b2World;
+
+    import noiseandheat.ane.box2d.data.Version;
+    import noiseandheat.ane.box2d.data.b2BodyProxy;
+    import noiseandheat.ane.box2d.errors.NullExtensionContextError;
+
+    import flash.events.EventDispatcher;
+    import flash.utils.Dictionary;
 
     public final class Box2D
     extends EventDispatcher
@@ -41,10 +49,14 @@ package noiseandheat.ane.box2d
     {
         private var context:Box2DActionScriptData;
         private var nextFreeID:uint = 0;
+        private var world:b2World;
+
+        private var proxyToBodyMap:Dictionary = new Dictionary(true);
 
         public function Box2D()
         {
             context = new Box2DActionScriptData();
+            world = new b2World(new b2Vec2(0, -10), true);
         }
 
         public function dispose():void
@@ -66,39 +78,83 @@ package noiseandheat.ane.box2d
         public function getBox2DVersion():Version
         {
             if (context == null) throw new NullExtensionContextError();
-            return Version.create({major:0, minor:0, revision:0});
+
+            return Version.create({major:2, minor:1, revision:0});
         }
 
-        public function setWorldGravity(b2Vec2:Object):void
+        public function setWorldGravity(g:Object):void
         {
             if (context == null) throw new NullExtensionContextError();
+            world.SetGravity(new b2Vec2(g['x'], g['y']));
         }
 
-        public function createBody(b2BodyDef:Object = null):b2BodyProxy
+        public function createBody(def:Object = null):b2BodyProxy
         {
             if (context == null) throw new NullExtensionContextError();
 
             var bodyID:uint = claimNextFreeID();
-            var body:b2BodyProxy = context.getBody(bodyID, true);
+            var bodyProxy:b2BodyProxy = context.getBody(bodyID, true);
 
-            body.id = bodyID;
 
-            if(b2BodyDef)
+            var bodyDef:b2BodyDef = new b2BodyDef();
+            if(def)
             {
-                if(b2BodyDef["position"])
+                if(def["position"])
                 {
-                    body.position.x = b2BodyDef["position"]['x'];
-                    body.position.y = b2BodyDef["position"]['y'];
+                    bodyDef.position.Set(def["position"]['x'], def["position"]['y']);
                 }
+                if(def['type']) bodyDef.type = def['type'];
             }
 
-            return body;
+            var body:b2Body = world.CreateBody(bodyDef);
+            body.SetUserData(bodyProxy);
+            proxyToBodyMap[bodyProxy] = body;
+
+            bodyProxy.id = bodyID;
+            bodyProxy.angle = body.GetAngle();
+            bodyProxy.position.x = body.GetPosition().x;
+            bodyProxy.position.y = body.GetPosition().y;
+            bodyProxy.notifyUpdated();
+
+            return bodyProxy;
         }
 
-        public function createBodyFixtureWithBoxShape(bodyID:uint, width:Number, height:Number, b2FixtureDef:Object = null):uint
+        public function createBodyFixtureWithBoxShape(bodyID:uint, halfW:Number, halfH:Number, def:Object = null):uint
         {
             if (context == null) throw new NullExtensionContextError();
-            return claimNextFreeID();
+
+            var fixtureID:uint = claimNextFreeID();
+            var bodyProxy:b2BodyProxy = context.getBody(bodyID, true);
+            var body:b2Body = proxyToBodyMap[bodyProxy];
+
+            if(body == null) return 0;
+
+            var fixtureDef:b2FixtureDef = new b2FixtureDef();
+            if(def != null)
+            {
+                if(def['friction']) fixtureDef.friction = def['friction'];
+                if(def['density']) fixtureDef.density = def['density'];
+                if(def['restitution']) fixtureDef.restitution = def['restitution'];
+            }
+
+            var shape:b2PolygonShape = new b2PolygonShape();
+            shape.SetAsBox(halfW, halfH);
+            fixtureDef.shape = shape;
+
+            var fixture:b2Fixture;
+
+            if(def != null)
+            {
+                fixture = body.CreateFixture(fixtureDef);
+            }
+            else
+            {
+                fixture = body.CreateFixture2(shape, 0);
+            }
+
+            fixture.SetUserData(fixtureID);
+
+            return fixtureID;
         }
 
         public function get bodies():Dictionary
@@ -109,14 +165,24 @@ package noiseandheat.ane.box2d
 
         public function worldStep(timeStep:Number = 1 / 60, velocityIterations:int = 8, positionIterations:int = 3, updateBodiesVector:Boolean = true):void
         {
+            world.Step(timeStep, velocityIterations, positionIterations);
+
             if(updateBodiesVector) updateBodyStore();
         }
 
         public function updateBodyStore():void
         {
-            for each (var body:b2BodyProxy in context.bodies)
+            for (var b:b2Body = world.GetBodyList(); b; b = b.GetNext())
             {
-                body.notifyUpdated();
+                var proxy:b2BodyProxy = b.GetUserData() as b2BodyProxy;
+                if(proxy != null)
+                {
+                    proxy.angle = b.GetAngle();
+                    proxy.position.x = b.GetPosition().x;
+                    proxy.position.y = b.GetPosition().y;
+
+                    proxy.notifyUpdated();
+                }
             }
         }
     }

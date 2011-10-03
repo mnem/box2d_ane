@@ -31,6 +31,7 @@ package noiseandheat.test.box2dane
     import noiseandheat.ane.box2d.Box2D;
     import noiseandheat.ane.box2d.Box2DAPI;
     import noiseandheat.ane.box2d.data.b2BodyProxy;
+    import noiseandheat.ane.box2d.data.b2VecProxy;
     import noiseandheat.ane.box2d.events.Box2DExtensionErrorEvent;
 
     import flash.display.Graphics;
@@ -49,6 +50,7 @@ package noiseandheat.test.box2dane
         private static const TEXT_OUT:Boolean = false;
 
         private static const PIXELS_PER_M:int = 42;
+//        private static const PIXELS_PER_M:int = 10;
 
         private var output:TextField;
         private var b2d:Box2DAPI;
@@ -115,40 +117,39 @@ package noiseandheat.test.box2dane
             log("Creating ground");
             groundBody = b2d.createBody({position:{x:0.0, y:0.0}});
             groundBody.updateCallback = groundUpdated;
-            groundFixtureID = b2d.createBodyFixtureWithBoxShape(groundBody.id, 5.0, 1.0);
+            groundFixtureID = b2d.createBodyFixtureWithBoxShape(groundBody.id, 5.0, 0.5);
 
             log("Creating dynamic");
             dynamicBody = b2d.createBody({type:2, position:{x:0.0, y:9}});
             dynamicBody.updateCallback = bodyUpdated;
-            dynamicFixtureID = b2d.createBodyFixtureWithBoxShape(dynamicBody.id, 1.0, 1.0, {density:1.0, friction:0.3});
+            dynamicFixtureID = b2d.createBodyFixtureWithBoxShape(dynamicBody.id, 0.5, 0.5, {density:1.0, friction:0.3});
+        }
+
+        private function drawCenteredBox(position:b2VecProxy, width:Number, height:Number, colour:uint):void
+        {
+            var pixelsW:Number = width * PIXELS_PER_M;
+            var pixelsH:Number = height * PIXELS_PER_M;
+            var pixelsX:Number = (position.x * PIXELS_PER_M) - (pixelsW/2);
+            var pixelsY:Number = (position.y * PIXELS_PER_M) + (pixelsH/2);
+
+            var g:Graphics = canvas.graphics;
+            g.beginFill(colour);
+            g.drawRect(pixelsX, -pixelsY, pixelsW, pixelsH);
+            g.endFill();
         }
 
         private function bodyUpdated(body:b2BodyProxy):void
         {
             //log("Updated: " + body);
-
-            var x_px:Number = body.position.x * PIXELS_PER_M;
-            var y_px:Number = body.position.y * PIXELS_PER_M;
-
-            var g:Graphics = canvas.graphics;
-            g.beginFill(0xA51B26);
-            g.drawRect(x_px - (0.5 * PIXELS_PER_M), -(y_px - (0.5 * PIXELS_PER_M)), 1*PIXELS_PER_M, 1*PIXELS_PER_M);
-            g.endFill();
+            drawCenteredBox(body.position, 1, 1, 0xA51B26);
         }
 
 
         private function groundUpdated(body:b2BodyProxy):void
         {
             //log("Updated: " + body);
-            var g:Graphics = canvas.graphics;
-            g.beginFill(0x929292);
-
-            var x_px:Number = body.position.x * PIXELS_PER_M;
-            var y_px:Number = body.position.y * PIXELS_PER_M;
-
-            g.drawRect(x_px - (2.5 * PIXELS_PER_M), -(y_px - (0.5 * PIXELS_PER_M)), 5*PIXELS_PER_M, 1*PIXELS_PER_M);
-            g.endFill();
-        }
+            drawCenteredBox(body.position, 10, 1, 0x929292);
+         }
 
         private function logBodies():void
         {

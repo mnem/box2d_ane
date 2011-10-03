@@ -3,7 +3,7 @@ package noiseandheat.ane.box2d.data
     /**
      * @author mnem
      */
-    public class b2Vec
+    public class b2VecProxy
     {
         public var x:Number = 0;
         public var y:Number = 0;
