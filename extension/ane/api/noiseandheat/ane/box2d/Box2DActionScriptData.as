@@ -44,7 +44,9 @@ package noiseandheat.ane.box2d
     {
         private var _bodies:Dictionary = new Dictionary();
 
-        public function getBody(bodyID:uint, createIfNeeded:Boolean = false):b2BodyProxy
+        public function getBody(
+            bodyID:uint, 
+            createIfNeeded:Boolean = false):b2BodyProxy
         {
             if(_bodies[bodyID] == null && createIfNeeded)
             {

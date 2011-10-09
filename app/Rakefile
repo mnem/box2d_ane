@@ -19,6 +19,13 @@ def get_iospass()
 end
 
 ############################################################################
+# Test app AS only
+desc 'Compiles the AS only app'
+task :compile_asonly => :ensure_build_directory do
+	%x{mxmlc +configname=air -output build/Box2DASApp.swf src/noiseandheat/test/box2dane/Box2DANEApp.as -load-config+=buildasonly.config}
+end
+
+############################################################################
 # Test app
 desc 'Cleans the build directory by killing it'
 task :clean do
@@ -92,5 +99,16 @@ task :package_android => [:ensure_android_package_directory, :compile] do
 	%x{adt -package -target apk #{android_package_signing} #{output_name} #{input_files} -extdir ../extension/build}
 end
 
-task :default => [ :quick_package_ios, :package_android ]
+desc 'Packages the as only app for android'
+task :package_android_asonly => [:ensure_android_package_directory, :compile_asonly] do
+	package_signing = "-storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass}"
+	android_package_signing = "#{package_signing}"
+	output_name = "build/android/Box2DASApp.apk"
+	input_files = "src/noiseandheat/test/box2dane/Box2DASApp-app.xml -C build Box2DASApp.swf"
+	%x{adt -package -target apk #{android_package_signing} #{output_name} #{input_files}}
+end
+
+#task :default => [ :quick_package_ios, :package_android ]
 #task :default => [ :package_android ]
+#task :default => [ :package_android, :package_android_asonly ]
+task :default => [ :package_android, :package_android_asonly, :quick_package_ios ]

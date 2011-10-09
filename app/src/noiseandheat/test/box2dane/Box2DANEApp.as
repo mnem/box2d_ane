@@ -55,10 +55,6 @@ package noiseandheat.test.box2dane
 
         private var output:TextField;
         private var b2d:Box2DAPI;
-//        private var groundBody:b2BodyProxy;
-//        private var groundFixtureID:uint;
-//        private var dynamicBody:b2BodyProxy;
-//        private var dynamicFixtureID:uint;
 
         private var canvas:Sprite;
 
@@ -114,7 +110,7 @@ package noiseandheat.test.box2dane
         private function handleEnterFrame(event:Event):void
         {
             var physicsTime:int = getTimer();
-            b2d.worldStep(1 / 60, 6, 2, false);
+            b2d.worldStep(1 / 60, 8, 3, false);
             physicsTimings[currentSample] = getTimer() - physicsTime;
 
             var renderTime:int = getTimer();
@@ -167,8 +163,8 @@ package noiseandheat.test.box2dane
             log("Creating dynamic");
             var i:int;
             var j:int;
-            var iMax:int = 10;
-            var jMax:int = 5;
+            var iMax:int = 12;
+            var jMax:int = 12;
             var cubeEdge:Number = 0.5;
             var currentX:Number = -cubeEdge * jMax / 2;
             var dynamicBody:b2BodyProxy;
