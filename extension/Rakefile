@@ -1,8 +1,16 @@
 require 'rubygems'
 require 'highline/import'
+require 'rake/clean'
+
+SDK_HOME = '/Users/mnem/Development/sdks/flash/AIRSDK_3-6'
+COMPC = "\"#{SDK_HOME}/bin/acompc\""
+ADT = "\"#{SDK_HOME}/bin/adt\""
+
+ENV['AIR_SDK_HOME'] = SDK_HOME
+ENV['FLEX_SDK_HOME'] = SDK_HOME
 
 def get_storepass()
-	password = %x{cat ../certificates/.password}
+	password = %x{cat ../certificates/.ios-password}.strip
 	if $?.exitstatus != 0 then
 		password = ask("Self signing key password: ") {|q| q.echo = '*'}
 	end
@@ -12,81 +20,67 @@ end
 
 ############################################################################
 # Default
-desc 'Ensures the default ActionScript build directory exists'
-task :ensure_default_build_directory do
-	`mkdir -p build/default`
-end
+directory "build/default"
 
 desc 'Builds the default ActionScript fallback version of the extension'
-task :compile_default_library => :ensure_default_build_directory do
-	`compc +configname=air -load-config+=default/build.config -output build/default/default.swc`
+task :compile_default_library => "build/default" do
+	sh "#{COMPC} +configname=airmobile -load-config+=default/build.config -output build/default/default.swc"
 end
 
 desc 'Prepares the default ActionScript fallback version of the extension'
 task :prepare_default_library => :compile_default_library do
 	# Take the library.swf out of the swc
-	`unzip -o build/default/default.swc library.swf -d build/default`
+	sh "unzip -o build/default/default.swc library.swf -d build/default"
 end
 
 ############################################################################
 # iOS
 $build_type = "Release"
 
-desc 'Ensures the ios build directory exists'
-task :ensure_ios_build_directory do
-	`mkdir -p build/ios`
-end
+directory "build/ios"
 
 desc 'Builds the release version of the native library for ios'
 task :compile_ios_library do
-  `xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj clean`
-  `xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj -target NaHBox2D -configuration #{$build_type}`
+  sh "xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj clean"
+  sh "xcodebuild -project native/ios/NAH_B2D/NaHBox2D.xcodeproj -target NaHBox2D -configuration #{$build_type}"
 end
 
 desc 'Builds and copies the version of the native library for ios to the build directory'
-task :prepare_ios_library => [:ensure_ios_build_directory, :compile_ios_library, :compile_api] do
-	`cp native/ios/NAH_B2D/build/#{$build_type}-iphoneos/libNaHBox2D.a build/ios`
+task :prepare_ios_library => ["build/ios", :compile_ios_library, :compile_api] do
+	cp "native/ios/NAH_B2D/build/#{$build_type}-iphoneos/libNaHBox2D.a", "build/ios"
 
 	# Take the library.swf from the main API swc
-	`unzip -o build/NaHBox2DAPI.swc library.swf -d build/ios`
+	sh "unzip -o build/NaHBox2DAPI.swc library.swf -d build/ios"
 end
 
 ############################################################################
 # Android
-desc 'Ensures the android build directory exists'
-task :ensure_android_build_directory do
-	`mkdir -p build/android`
-end
+directory "build/android"
 
 desc 'Builds the release version of the native library for android'
 task :compile_android_library do
-  `ndk-build -C native/android clean`
-  `ndk-build -C native/android`
+  sh "ndk-build -C native/android clean"
+  sh "ndk-build -C native/android"
 end
 
 desc 'Builds and copies the version of the native library for ios to the build directory'
-task :prepare_android_library => [:ensure_android_build_directory, :compile_android_library, :compile_api] do
-	`cp native/android/libs/armeabi/libNaHBox2D.so build/android`
+task :prepare_android_library => ["build/android", :compile_android_library, :compile_api] do
+	cp "native/android/libs/armeabi/libNaHBox2D.so", "build/android"
 
 	# Take the library.swf from the main API swc
-	`unzip -o build/NaHBox2DAPI.swc library.swf -d build/android`
+	sh "unzip -o build/NaHBox2DAPI.swc library.swf -d build/android"
 end
 
 ############################################################################
 # Extension
-desc 'Cleans the build directory by killing it'
-task :clean do
-	`rm -Rf build`
-end
 
-desc 'Ensures the build directory exists'
-task :ensure_build_directory do
-	`mkdir -p build`
-end
+directory "build"
+
+CLEAN.add "build"
 
 desc 'Builds the ActionScript API for the extension'
-task :compile_api => :ensure_build_directory do
-	`compc +configname=air -load-config+=ane/build.config -output build/NaHBox2DAPI.swc`
+task :compile_api => "build" do
+	`#{COMPC} +configname=airmobile -load-config+=ane/build.config -output build/NaHBox2DAPI.swc`
 end
 
 desc 'Packages the extension'
@@ -97,13 +91,13 @@ task :package_extension => [:prepare_ios_library, :prepare_android_library, :pre
 		"iPhone-ARM" => "-C build/ios library.swf libNaHBox2D.a",
 		"Android-ARM" => "-C build/android library.swf libNaHBox2D.so"
 	}
-	command = "adt -package"
-	air_signing = "-storetype pkcs12 -keystore ../certificates/certificate.p12 -storepass #{get_storepass}"
+	command = "#{ADT} -package"
+	air_signing = "-storetype pkcs12 -keystore ../certificates/ios.p12 -storepass \"#{get_storepass}\""
 	extension_package = "-target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc"
 	platforms = ''
 	targets.map { |plat, options| platforms = platforms + " -platform #{plat} #{options} " }
 
-	%x{#{command} #{air_signing} #{extension_package} #{platforms}}
+	sh "#{command} #{air_signing} #{extension_package} #{platforms}"
 end
 
 task :default => [ :package_extension ]
