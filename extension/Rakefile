@@ -92,7 +92,7 @@ task :package_extension => [:prepare_ios_library, :prepare_android_library, :pre
 		"Android-ARM" => "-C build/android library.swf libNaHBox2D.so"
 	}
 	command = "#{ADT} -package"
-	air_signing = "-storetype pkcs12 -keystore ../certificates/ios.p12 -storepass \"#{get_storepass}\""
+	air_signing = "" #"-storetype pkcs12 -keystore ../certificates/ios.p12 -storepass \"#{get_storepass}\""
 	extension_package = "-target ane build/NaHBox2D.ane ane/extension.xml -swc build/NaHBox2DAPI.swc"
 	platforms = ''
 	targets.map { |plat, options| platforms = platforms + " -platform #{plat} #{options} " }
